@@ -1,0 +1,180 @@
+﻿<common:LayoutAwarePage
+    x:Name="pageRoot"
+    x:Class="CineSphere.MainPage"
+    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CineSphere"
+    xmlns:common="using:CineSphere.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <Page.Resources>
+        <CollectionViewSource
+            x:Name="itemsViewSource"
+            Source="{Binding Items}" 
+            IsSourceGrouped="True"
+            />
+
+        <CollectionViewSource
+            x:Name="mruViewSource"
+            Source="{Binding MRUItem}" 
+            IsSourceGrouped="True"
+            />
+
+        <SolidColorBrush x:Key="ColorFill" >
+            
+        </SolidColorBrush>
+
+     
+    </Page.Resources>
+
+    <Page.BottomAppBar>
+        <AppBar x:Name="bottomAppBar" Padding="10,0,10,0">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="colorPickerButton" Style="{StaticResource FolderAppBarButtonStyle}" AutomationProperties.Name="ColorPicker" Click="colorPickerLibrary_show">
+                        <Button.Content>
+                            <Image Source="Assets/WebLiinkIcon.png" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource RemoveAppBarButtonStyle}" Click="RemoveFile"  AutomationProperties.Name="Remove Selection" IsEnabled="False"/>
+                    <Button Style="{StaticResource FolderAppBarButtonStyle}" Click="AddFolder"  AutomationProperties.Name="Add Folder"/>
+                    <!--<Button Style="{StaticResource RemoveAppBarButtonStyle}"  />-->
+                    <Button Style="{StaticResource OpenFileAppBarButtonStyle}" Click="AddFile" AutomationProperties.Name="Add File(s)" />
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
+
+    <!--
+        This grid acts as a root panel for the page that defines two rows:
+        * Row 0 contains the back button and page title
+        * Row 1 contains the rest of the page layout
+    -->
+    <Grid Style="{StaticResource LayoutRootStyle}" Name="MainGrid">
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/background.jpg"  Stretch="Fill"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Name="TintView" Opacity=".1" Grid.RowSpan="2" Visibility="Collapsed" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding ProgressFrameFillColor, Mode=OneWay}" IsHitTestVisible="False"/>
+
+
+        <GridView
+            x:Name="mruGridView"
+            AutomationProperties.AutomationId="MRUGridView"
+            AutomationProperties.Name="MRUItem"
+            TabIndex="1"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="4"
+            Padding="60,136,116,46"
+            ItemTemplate="{StaticResource CircularLibraryGrid380x460}"
+            ItemsSource="{Binding Source={StaticResource mruViewSource}}"
+            IsItemClickEnabled="True"
+            SelectionMode="Single"
+            IsSwipeEnabled="false" 
+            ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
+            />
+
+
+        <!-- Horizontal scrolling grid used in most view states -->
+        <GridView
+            x:Name="itemGridView"
+            AutomationProperties.AutomationId="ItemsGridView"
+            AutomationProperties.Name="Items"
+            TabIndex="1"
+            Grid.RowSpan="2"
+            Padding="60,136,116,46"
+            ItemTemplate="{StaticResource CircularLibraryGrid140x180}"
+            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+            IsItemClickEnabled="True"
+            SelectionMode="Single"
+            IsSwipeEnabled="false" 
+            ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
+            />
+
+        <!-- Vertical scrolling list only used when snapped -->
+        <ListView
+            x:Name="itemListView"
+            AutomationProperties.AutomationId="ItemsListView"
+            AutomationProperties.Name="Items"
+            TabIndex="1"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Margin="0,-10,0,0"
+            Padding="10,0,0,60"
+            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+            ItemTemplate="{StaticResource Standard80ItemTemplate}"
+            SelectionMode="None"
+            IsSwipeEnabled="false"/>
+
+        <Grid Name="EmptyLibraryView" Grid.RowSpan="2" Visibility="Collapsed">
+            <TextBlock Padding="60,136,116,46"  TextWrapping="Wrap" Text="It's lonely here. You currently have nothing in your library.&#x0a;Add some videos. We currently support mp4s and avis." FontSize="22" Width="800" HorizontalAlignment="Left"/>
+        </Grid>
+
+        <Grid Name="videoView" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
+            <MediaElement Name="videoPlayer"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
+
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="backButton" Click="click_goBack" IsEnabled="True" Style="{StaticResource BackButtonStyle}" Visibility="Collapsed"/>
+            <TextBlock x:Name="pageTitle" Grid.Column="0"  VerticalAlignment="Bottom" Text="cinesphere : library"  IsHitTestVisible="False" Style="{StaticResource PageHeaderTextStyle}" FontSize="52" Margin="60,0,0,0" />
+        </Grid>
+
+
+
+
+        <VisualStateManager.VisualStateGroups>
+            <!-- Visual states reflect the application's view state -->
+            <VisualStateGroup x:Name="ApplicationViewStates">
+                <VisualState x:Name="FullScreenLandscape"/>
+                <VisualState x:Name="Filled"/>
+
+                <!-- The entire page respects the narrower 100-pixel margin convention for portrait -->
+                <VisualState x:Name="FullScreenPortrait">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PortraitBackButtonStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Padding">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="96,136,86,56"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+
+                <!--
+                    The back button and title have different styles when snapped, and the list representation is substituted
+                    for the grid displayed in all other view states
+                -->
+                <VisualState x:Name="Snapped">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="pageTitle" Storyboard.TargetProperty="Style">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedPageHeaderTextStyle}"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</common:LayoutAwarePage>

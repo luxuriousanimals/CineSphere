@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+  <Identity Name="bbff8e94-36be-4481-af97-291371fc241de" Publisher="CN=Luxa" Version="1.0.0.0" />
+  <Properties>
+    <DisplayName>CineSphere</DisplayName>
+    <PublisherDisplayName>LuxuriousAnimals</PublisherDisplayName>
+    <Logo>Assets\50x50.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.2.1</OSMinVersion>
+    <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="cinesphere.App">
+      <VisualElements DisplayName="cinesphere" Logo="Assets\150x150.png" SmallLogo="Assets\30x30.png" Description="cinesphere" ForegroundText="light" BackgroundColor="#777777" ToastCapable="true">
+        <DefaultTile ShowName="allLogos" WideLogo="Assets\310x150.png" />
+        <SplashScreen Image="Assets\620x300.png" BackgroundColor="#777777" />
+        <InitialRotationPreference>
+          <Rotation Preference="landscape" />
+          <Rotation Preference="landscapeFlipped" />
+        </InitialRotationPreference>
+      </VisualElements>
+      <Extensions>
+        <Extension Category="windows.fileTypeAssociation">
+          <FileTypeAssociation Name="avis">
+            <EditFlags OpenIsSafe="true" />
+            <SupportedFileTypes>
+              <FileType>.avi</FileType>
+              <FileType>.mp4</FileType>
+            </SupportedFileTypes>
+          </FileTypeAssociation>
+        </Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="musicLibrary" />
+    <Capability Name="picturesLibrary" />
+    <Capability Name="documentsLibrary" />
+    <Capability Name="removableStorage" />
+    <Capability Name="videosLibrary" />
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
