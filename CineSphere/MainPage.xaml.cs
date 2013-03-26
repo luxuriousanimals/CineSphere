@@ -66,7 +66,7 @@ namespace CineSphere
         }
 
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             Current = this;
             vidView = this.videoView;
@@ -76,7 +76,7 @@ namespace CineSphere
 
             //video = new VideosViewModel();
             //videosGrid = video.GetVideos();
-            SetCollectionViewSource();
+            await SetCollectionViewSource();
 
             base.OnNavigatedTo(e);
             itemGridView.ItemClick += itemGridView_ItemClick;
@@ -97,6 +97,7 @@ namespace CineSphere
 
         async Task SetCollectionViewSource()
         {
+            Debug.WriteLine("makes it here ");
             IStorageItem mru = null;
             if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
             {
@@ -107,16 +108,20 @@ namespace CineSphere
             }
             else {
                 itemGridView.ItemsSource = _movieList.GetAll();
+
             }
 
             itemGridView.SelectedItem = null;
 
             if (_movieList.GetAll().Count() == 0)
             {
+
                 EmptyLibraryView.Visibility = Visibility.Visible;
             }
             else {
+
                 EmptyLibraryView.Visibility = Visibility.Collapsed;
+
             }
 
            
@@ -178,7 +183,7 @@ namespace CineSphere
                 }
             }
 
-            SetCollectionViewSource();
+            await SetCollectionViewSource();
 
         }
 
@@ -191,17 +196,17 @@ namespace CineSphere
 
             folderPicker.FileTypeFilter.Add(".mp4");
             folderPicker.FileTypeFilter.Add(".avi");
-            folderPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            folderPicker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
 
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder != null)
             {
-
-                StorageApplicationPermissions.FutureAccessList.AddOrReplace(folder.Path, folder);
-                ProcessFolderSelection(folder);
+                Debug.WriteLine(folder.Path);
+                StorageApplicationPermissions.FutureAccessList.AddOrReplace(folder.Name, folder);
+                await ProcessFolderSelection(folder);
             }
 
-            SetCollectionViewSource();
+           await SetCollectionViewSource();
 
         }
 
@@ -211,15 +216,22 @@ namespace CineSphere
 
             var tn = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView);
             string x = await SaveImageLocal(tn, file.Name);
-
-
-
             _movieList.Add(new Video { Title = file.Name, Subtitle = file.FileType, Img = x, Path = file.Path });
+
         }
 
-        public void ProcessFolderSelection(StorageFolder folder)
+        public async Task ProcessFolderSelection(StorageFolder folder)
         {
 
+            var results = await folder.GetFilesAsync();
+
+            foreach (StorageFile file in results)
+            {
+                Debug.WriteLine(file);
+                StorageApplicationPermissions.FutureAccessList.AddOrReplace(file.Name, file);
+                await ProcessFileSelection(file);
+
+            }
         }
 
 

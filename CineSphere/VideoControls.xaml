@@ -18,19 +18,19 @@
             <Grid Name="PlayBackHolder"  Width="360" Height="360">
 
 
-                <Button x:Name="PlayButton" Click="PlayButton_Click" BorderThickness="0" Canvas.ZIndex="601" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}" >
+                <Button x:Name="PlayButton" Width="159" Height="159" Click="PlayButton_Click" BorderThickness="0" Canvas.ZIndex="601" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}" >
                     <Canvas>
-                        <Ellipse Width="159" Height="159"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-80" Canvas.Top="-80"/>
+                        <Ellipse Width="159" Height="159" Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-80" Canvas.Top="-80"/>
                         <Polygon Points="-30,-40 50,0, -30,40" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" />
                     </Canvas>
 
 
                 </Button>
-                <Button x:Name="RewindButton" Click="RewindButton_Click" BorderThickness="0"  Canvas.ZIndex="600" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}">
+                <Button x:Name="RewindButton" Click="RewindButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="24,188,0,0">
 
                     <Canvas >
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-160" Canvas.Top="4"/>
-                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-123" Canvas.Top="45" >
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-0" Canvas.Top="0" >
                             <Path.Data>
                                 <PathGeometry>
                                     <PathGeometry.Figures>
@@ -54,10 +54,10 @@
                     </Canvas>
                     <!--<Image Source="Assets/rewind.png"  Width="64"  Height="56"/>-->
                 </Button>
-                <Button x:Name="ForwardButton"  Click="ForwardButton_Click" BorderThickness="0"  Canvas.ZIndex="600" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}">
+                <Button x:Name="ForwardButton"  Click="ForwardButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="256,188,0,0">
                     <Canvas >
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="78" Canvas.Top="4"/>
-                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="123" Canvas.Top="45" >
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="0" Canvas.Top="0" >
                             <Path.Data>
                                 <PathGeometry>
                                     <PathGeometry.Figures>
@@ -82,29 +82,24 @@
 
                     <!--<Image Source="Assets/forward.png"  Width="64"  Height="56"/>-->
                 </Button>
-                <Button x:Name="FullscreenButton" Click="FullscreenButton_Click" BorderThickness="0"  Canvas.ZIndex="600" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}">
+                <Button x:Name="FullscreenButton" Click="FullscreenButton_Click" BorderThickness="0"  Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="256,92,0,0">
                     <Canvas>
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}"  Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="76" Canvas.Top="-86"/>
-                        <Canvas >
-                            <Rectangle Width="39" Height="27" Stroke="{Binding StrokeColorC}" StrokeThickness="3" Canvas.Left="98"  Canvas.Top="-58"/>
-                            <Rectangle Width="26" Height="18" Stroke="{Binding StrokeColorC}" StrokeThickness="3" Canvas.Left="98"  Canvas.Top="-58"/>
-
-
-                        </Canvas>
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                            <Rectangle Width="39" Height="27" Stroke="{Binding StrokeColorC}" StrokeThickness="3" Canvas.Left="-20"  Canvas.Top="-14"/>
+                            <Rectangle Width="26" Height="18" Stroke="{Binding StrokeColorC}" StrokeThickness="3" Canvas.Left="-20"  Canvas.Top="-14"/>
                     </Canvas>
 
                     <!--<Image Source="Assets/fullscreen.png"   Width="52" Height="52" />-->
                 </Button>
-                <Button x:Name="ColorpickerButton" Click="ColorPicker_Click" BorderThickness="0"  Canvas.ZIndex="600" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}">
+                <Button x:Name="ColorpickerButton" Click="ColorPicker_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="24,92,0,0">
                     <Canvas>
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-158" Canvas.Top="-86" />
-                        <Canvas>
-                            <Ellipse Width="30" Height="30"  Fill="Blue"  Stroke="{Binding StrokeColorC, Mode=OneWay}" StrokeThickness="2" Canvas.Left="-132" Canvas.Top="-66" Opacity=".3"/>
-                            <Ellipse Width="30" Height="30"  Fill="Red"  Stroke="{Binding StrokeColorC, Mode=OneWay}" StrokeThickness="2" Canvas.Left="-142" Canvas.Top="-54"  Opacity=".3"/>
-                            <Ellipse Width="30" Height="30"  Fill="Green"  Stroke="{Binding StrokeColorC, Mode=OneWay}" StrokeThickness="2" Canvas.Left="-122" Canvas.Top="-54"  Opacity=".3"/>
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                       
+                            <Ellipse Width="30" Height="30"  Fill="Blue"  Stroke="{Binding StrokeColorC, Mode=OneWay}" StrokeThickness="2" Canvas.Left="-15" Canvas.Top="-25" Opacity=".3"/>
+                            <Ellipse Width="30" Height="30"  Fill="Red"  Stroke="{Binding StrokeColorC, Mode=OneWay}" StrokeThickness="2" Canvas.Left="-25" Canvas.Top="-10"  Opacity=".3"/>
+                            <Ellipse Width="30" Height="30"  Fill="Green"  Stroke="{Binding StrokeColorC, Mode=OneWay}" StrokeThickness="2" Canvas.Left="-5" Canvas.Top="-10"  Opacity=".3"/>
 
-                        </Canvas>
-                    </Canvas>
+                      </Canvas>
 
                     <!--<Image Source="Assets/colorPicker.png" Width="52" Height="52"/>-->
                 </Button>

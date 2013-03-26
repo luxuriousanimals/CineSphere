@@ -24,11 +24,8 @@
             IsSourceGrouped="True"
             />
 
-        <SolidColorBrush x:Key="ColorFill" >
-            
-        </SolidColorBrush>
+        <common:MineColorHelper x:Key="MineColorHelper" StrokeColorC="AntiqueWhite"></common:MineColorHelper>
 
-     
     </Page.Resources>
 
     <Page.BottomAppBar>
@@ -37,7 +34,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Button x:Name="colorPickerButton" Style="{StaticResource FolderAppBarButtonStyle}" AutomationProperties.Name="ColorPicker" Click="colorPickerLibrary_show">
                         <Button.Content>
-                            <Image Source="Assets/WebLiinkIcon.png" />
+                            <Canvas>
+                                <Ellipse Width="10" Height="10"  Stroke="{StaticResource AppBarItemForegroundThemeBrush}" StrokeThickness="1" Canvas.Left="-6" Canvas.Top="-8" />
+                                <Ellipse Width="10" Height="10"  Stroke="{StaticResource AppBarItemForegroundThemeBrush}" StrokeThickness="1" Canvas.Left="-10" Canvas.Top="-3" />
+                                <Ellipse Width="10" Height="10"  Stroke="{StaticResource AppBarItemForegroundThemeBrush}" StrokeThickness="1" Canvas.Left="-2" Canvas.Top="-3"  />
+                            </Canvas>
                         </Button.Content>
                     </Button>
                 </StackPanel>
@@ -96,7 +97,7 @@
             ItemTemplate="{StaticResource CircularLibraryGrid140x180}"
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
             IsItemClickEnabled="True"
-            SelectionMode="Single"
+            SelectionMode="Multiple"
             IsSwipeEnabled="false" 
             ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
             />
@@ -116,8 +117,16 @@
             SelectionMode="None"
             IsSwipeEnabled="false"/>
 
-        <Grid Name="EmptyLibraryView" Grid.RowSpan="2" Visibility="Collapsed">
-            <TextBlock Padding="60,136,116,46"  TextWrapping="Wrap" Text="It's lonely here. You currently have nothing in your library.&#x0a;Add some videos. We currently support mp4s and avis." FontSize="22" Width="800" HorizontalAlignment="Left"/>
+        <Grid Name="EmptyLibraryView" Grid.Row="1" Margin="60,40,116,46" Visibility="Visible" Width="380" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FFE1E7EE">
+            <TextBlock Margin="20,20,20,20"  TextWrapping="Wrap" Text="Hey bub, give me something to work with here." FontSize="22" HorizontalAlignment="Left" Foreground="Black"/>
+            <StackPanel Margin="20,216,20,20" Orientation="Horizontal" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Height="84" >
+                <StackPanel.Background>
+                    <SolidColorBrush Color="Black"  Opacity=".6"/>
+                </StackPanel.Background>
+                <Button Style="{StaticResource FolderAppBarButtonStyle}" Click="AddFolder"  AutomationProperties.Name="Add Folder"/>
+                <!--<Button Style="{StaticResource RemoveAppBarButtonStyle}"  />-->
+                <Button Style="{StaticResource OpenFileAppBarButtonStyle}" Click="AddFile" AutomationProperties.Name="Add File(s)" />
+            </StackPanel>
         </Grid>
 
         <Grid Name="videoView" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
