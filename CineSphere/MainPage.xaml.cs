@@ -305,7 +305,7 @@ namespace CineSphere
         {
             //(sender as GridViewItem).Opacity = 0;
             //(sender as Panel).Children[0].Visibility = Visibility.Collapsed;
-            Debug.WriteLine("fucking pointer  " + (sender as GridView).Name);
+            Debug.WriteLine("pointer  " + (sender as GridView).Name);
         }
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
