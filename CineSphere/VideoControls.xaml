@@ -23,8 +23,8 @@
                         <Ellipse Width="159" Height="159" Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-80" Canvas.Top="-80"/>
                         <Polygon Points="-30,-40 50,0, -30,40" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" Name="ActualPlay" Opacity="0"/>
                         <Canvas Name="ActualPause">
-                            <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorBS, Mode=OneWay}"  Canvas.Left="-30" Canvas.Top="-40"/>
-                            <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorBS, Mode=OneWay}"  Canvas.Left="10" Canvas.Top="-40"/>
+                            <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}"  Canvas.Left="-30" Canvas.Top="-40"/>
+                            <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}"  Canvas.Left="10" Canvas.Top="-40"/>
                         </Canvas>
                     </Canvas>
 
@@ -33,7 +33,7 @@
                 <Button x:Name="RewindButton" Click="RewindButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="24,188,0,0">
 
                     <Canvas >
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-36" Canvas.Top="-41" />
                         <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-0" Canvas.Top="0" >
                             <Path.Data>
                                 <PathGeometry>
@@ -60,7 +60,7 @@
                 </Button>
                 <Button x:Name="ForwardButton"  Click="ForwardButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="256,188,0,0">
                     <Canvas >
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-46" Canvas.Top="-41" />
                         <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="0" Canvas.Top="0" >
                             <Path.Data>
                                 <PathGeometry>
@@ -120,6 +120,8 @@
             </Grid>
 
             <Grid Width="360" Height="360" Name="ColorPickerHolder" Visibility="Collapsed" Opacity="0"> 
+                <Ellipse Width="360" Height="360" Fill="Black" />
+                <TextBlock Text="select color" VerticalAlignment="Center" TextAlignment="Center" FontSize="28" Margin="127,147,127,146" TextWrapping="Wrap"/>
                 <Ellipse  Width="360" Height="360" Canvas.ZIndex="900"  PointerEntered="OverColorWheel" PointerPressed="Get_Pixel" PointerMoved="ReGet_Pixel"  PointerReleased="PointerUp"  PointerCaptureLost="PointerUp" Name="ColorWheel" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Ellipse.Fill>
                         <ImageBrush ImageSource="Assets/colorwheel.png"/>
@@ -132,7 +134,6 @@
             <VisualStateGroup x:Name="ApplicationViewStates">
                 <VisualState x:Name="FullScreenLandscape"/>
                 <VisualState x:Name="Filled"/>
-                <VisualState x:Name="ExposeColorWheel"></VisualState>
                 <VisualState x:Name="FullScreenPortrait">
                     <Storyboard>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
@@ -160,27 +161,73 @@
                     </Storyboard>
                 </VisualState>
                 <VisualState x:Name="showController">
-                    <Storyboard>
                         <Storyboard>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                             </ObjectAnimationUsingKeyFrames>
 
                         </Storyboard>
-                    </Storyboard>
                 </VisualState>
 
                 <VisualState x:Name="hideController">
-                    <Storyboard>
                         <Storyboard>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                             </ObjectAnimationUsingKeyFrames>
 
-                        </Storyboard>
                     </Storyboard>
                 </VisualState>
-
+                <VisualState x:Name="showColorPicker">
+                    <Storyboard>
+                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlayBackHolder" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                </VisualState>
+                <VisualState x:Name="hideColorPicker">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlayBackHolder" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                            </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="resetColorPicker">
+                    <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlayBackHolder" Storyboard.TargetProperty="Opacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         

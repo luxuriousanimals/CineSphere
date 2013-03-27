@@ -579,19 +579,23 @@ namespace CineSphere
 
             if (ColorPickerHolder.Opacity.ToString() == "0" || ColorPickerHolder.Visibility.ToString() == "Collapsed")
             {
-                ColorPickerHolder.Opacity = 1;
-                ColorPickerHolder.Visibility = Visibility.Visible;
 
-                PlayBackHolder.Opacity = 0;
-                PlayBackHolder.Visibility = Visibility.Collapsed;
+                VisualStateManager.GoToState(this, "showColorPicker", true);
+                //ColorPickerHolder.Opacity = 1;
+                //ColorPickerHolder.Visibility = Visibility.Visible;
+
+                //PlayBackHolder.Opacity = 0;
+                //PlayBackHolder.Visibility = Visibility.Collapsed;
             }
             else {
 
-                ColorPickerHolder.Opacity = 0;
-                ColorPickerHolder.Visibility = Visibility.Collapsed;
+                VisualStateManager.GoToState(this, "hideColorPicker", true);
 
-                PlayBackHolder.Opacity = 1;
-                PlayBackHolder.Visibility = Visibility.Visible;
+                //ColorPickerHolder.Opacity = 0;
+                //ColorPickerHolder.Visibility = Visibility.Collapsed;
+
+                //PlayBackHolder.Opacity = 1;
+                //PlayBackHolder.Visibility = Visibility.Visible;
 
             }
 
@@ -979,11 +983,22 @@ namespace CineSphere
         {
             _isSelectingColor = false;
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-            ColorPickerHolder.Opacity = 0;
-            ColorPickerHolder.Visibility = Visibility.Collapsed;
 
-            PlayBackHolder.Opacity = 1;
-            PlayBackHolder.Visibility = Visibility.Visible;
+            if (MainPage.Current.vidView.Visibility.ToString() == "Collapsed")
+            {
+                VisualStateManager.GoToState(this, "resetColorPicker", true);
+
+            }
+            else {
+                VisualStateManager.GoToState(this, "hideColorPicker", true);
+
+            }
+
+            //ColorPickerHolder.Opacity = 0;
+            //ColorPickerHolder.Visibility = Visibility.Collapsed;
+
+            //PlayBackHolder.Opacity = 1;
+            //PlayBackHolder.Visibility = Visibility.Visible;
 
         }
 

@@ -266,8 +266,7 @@ namespace CineSphere
         private void switchViews(String e)
         {
             switch (e)
-            {
-                case "Video":
+            {   case "Video":
 
                     VisualStateManager.GoToState(this, "OpenVideoView", true);
                     MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, controls.pointerpressedstage, true);
@@ -282,6 +281,12 @@ namespace CineSphere
                     controls.isVisible = false;
                     //controls.Visibility = Visibility.Collapsed;
                     MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, controls.pointerpressedstage);
+
+                    break;
+
+                case "colorPicker":
+                    Debug.WriteLine("this thing works");
+                    VisualStateManager.GoToState(controls, "showColorPicker", true);
 
                     break;
             }
@@ -311,12 +316,7 @@ namespace CineSphere
             Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("LastUsedFile", video, "metadata");
 
         }
-        private void HoverOn(object sender, PointerRoutedEventArgs e)
-        {
-            //(sender as GridViewItem).Opacity = 0;
-            //(sender as Panel).Children[0].Visibility = Visibility.Collapsed;
-            Debug.WriteLine("pointer  " + (sender as GridView).Name);
-        }
+       
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
         {
