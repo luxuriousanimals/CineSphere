@@ -11,7 +11,7 @@
     mc:Ignorable="d">
 
    
-    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Collapsed">
+    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Collapsed" Background="AliceBlue">
 
 
         <Grid Name="Holder"  Width="360" Height="360">
@@ -30,11 +30,11 @@
 
 
                 </Button>
-                <Button x:Name="RewindButton" Click="RewindButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="24,188,0,0">
+                <Button x:Name="RewindButton" Click="RewindButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="20,188,0,0">
 
                     <Canvas >
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-36" Canvas.Top="-41" />
-                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-0" Canvas.Top="0" >
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-5" Canvas.Top="0" >
                             <Path.Data>
                                 <PathGeometry>
                                     <PathGeometry.Figures>
@@ -58,10 +58,10 @@
                     </Canvas>
                     <!--<Image Source="Assets/rewind.png"  Width="64"  Height="56"/>-->
                 </Button>
-                <Button x:Name="ForwardButton"  Click="ForwardButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="256,188,0,0">
+                <Button x:Name="ForwardButton"  Click="ForwardButton_Click" BorderThickness="0"   Width="82" Height="82" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource CustomButton}" Margin="260,188,0,0">
                     <Canvas >
-                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-46" Canvas.Top="-41" />
-                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="0" Canvas.Top="0" >
+                        <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
+                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="5" Canvas.Top="0" >
                             <Path.Data>
                                 <PathGeometry>
                                     <PathGeometry.Figures>
@@ -108,7 +108,7 @@
                     <!--<Image Source="Assets/colorPicker.png" Width="52" Height="52"/>-->
                 </Button>
                 <Border Background="Black" CornerRadius="10" Width="100" Height="40" Margin="0,0,0,40" VerticalAlignment="Bottom" HorizontalAlignment="Center" Canvas.ZIndex="6">
-                    <TextBlock Foreground="White" Style="{StaticResource TitleTextStyle}" Height="40" Margin="1,5,0,0" HorizontalAlignment="Center" Name="DisplayDebug" >
+                    <TextBlock Foreground="White" Style="{StaticResource TitleTextStyle}" Height="40" Margin="1,5,0,0" HorizontalAlignment="Center" Name="DisplayTime" >
 
                     </TextBlock>
                 </Border>

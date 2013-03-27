@@ -81,7 +81,7 @@
             ItemsSource="{Binding Source={StaticResource mruViewSource}}"
             IsItemClickEnabled="True"
             SelectionMode="Single"
-            IsSwipeEnabled="false" 
+            IsSwipeEnabled="True" 
             ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
             />
 

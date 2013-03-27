@@ -57,8 +57,6 @@ namespace CineSphere.Data
                         using (var db = new SQLiteConnection(_dbPath))
                         {
 
-                            Debug.WriteLine(e);
-
                             if (e == null)
                             {
 

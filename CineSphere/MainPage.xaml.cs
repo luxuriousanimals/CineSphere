@@ -41,8 +41,7 @@ namespace CineSphere
         public VideoControls controls;
         public MediaElement vidPlayer;
         public MineColorHelper MyColors = new MineColorHelper();
-        //public ObservableCollection<VideoViewModel> videosGrid = null;
-        //public VideoViewModel video = null;
+        private Pointer pressedMainGrid;
 
         public bool IsFullscreen { set; get; }
 
@@ -99,7 +98,6 @@ namespace CineSphere
 
         async Task SetCollectionViewSource()
         {
-            Debug.WriteLine("makes it here ");
             IStorageItem mru = null;
             if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
             {
@@ -266,7 +264,8 @@ namespace CineSphere
         private void switchViews(String e)
         {
             switch (e)
-            {   case "Video":
+            {
+                case "Video":
 
                     VisualStateManager.GoToState(this, "OpenVideoView", true);
                     MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, controls.pointerpressedstage, true);
@@ -293,11 +292,12 @@ namespace CineSphere
 
         }
 
-        private void startControllerTimeout() {}
-
         public async void itemGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
+            Debug.WriteLine("break here? 5");
             var item = ((VideoViewModel)e.ClickedItem);
+            Debug.WriteLine("break here? 3");
+
             await SetMediaElementSourceAsync(item);
             switchViews("Video");
 
@@ -305,22 +305,26 @@ namespace CineSphere
 
         private async Task SetMediaElementSourceAsync(VideoViewModel file)
         {
+            Debug.WriteLine("break here? 1");
 
             StorageFile video = await Windows.Storage.StorageFile.GetFileFromPathAsync(file.Path);
             var stream = await video.OpenAsync(Windows.Storage.FileAccessMode.Read);
             MediaControl.TrackName = video.DisplayName;
             videoPlayer.SetSource(stream, video.ContentType);
+            Debug.WriteLine("break here? 2");
 
             videoPlayer.Play();
 
             Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("LastUsedFile", video, "metadata");
 
         }
-       
+
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
         {
             switchViews("colorPicker");
+            bottomAppBar.IsOpen = false;
+
         }
 
         private void RemoveFile(object sender, RoutedEventArgs e)

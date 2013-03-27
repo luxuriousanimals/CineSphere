@@ -158,7 +158,7 @@
                                IsHitTestVisible="False"
                                Stroke="White"
                                StrokeThickness="0"
-                                 Opacity=".8"
+                                 Opacity=".6"
                                  />
                         <Ellipse x:Name="FocusVisualBlack"
                                IsHitTestVisible="False"
@@ -173,10 +173,6 @@
     </Style>
 
 
-    <Style x:Key="OrbGridStyle1" TargetType="Ellipse">
-        <Setter Property="Fill" Value="Transparent"/>
-        <Setter Property="Stroke" Value="AliceBlue"/>
-    </Style>
   
     
     <Style x:Key="CineSphereGridViewItemStyle1" TargetType="GridViewItem">
@@ -208,7 +204,6 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <PointerDownThemeAnimation TargetName="HighlightBorder"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="PointerOverPressed">
