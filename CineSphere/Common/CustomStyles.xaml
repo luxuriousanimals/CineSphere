@@ -437,7 +437,7 @@
                                         </Grid>
                                     </Border>
                                     <Ellipse x:Name="PointerOverBorder" StrokeThickness="8" Stroke="{Binding StrokeColorC,Source={StaticResource MineColorHelper}}" Margin="4" Opacity="0" Width="140" Height="140" VerticalAlignment="Top" DataContext="{StaticResource MineColorHelper}"   />
-                                    <Ellipse x:Name="FocusVisual" Opacity="0" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="8"  Height="140"/>
+                                    <Ellipse x:Name="FocusVisual" Opacity="0" Margin="4" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="8"  Height="140" VerticalAlignment="Top"/>
                                     <Ellipse x:Name="SelectedBorder"  Height="140" IsHitTestVisible="False" Margin="4" Opacity="0" Stroke="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" StrokeThickness="10" VerticalAlignment="Top" />
                                     
                                     <TextBlock x:Name="MultiArrangeOverlayText" Foreground="{StaticResource ListViewItemDragForegroundThemeBrush}" FontSize="26.667" FontFamily="{StaticResource ContentControlThemeFontFamily}" IsHitTestVisible="False" Margin="18,9,0,0" Opacity="0" TextWrapping="Wrap" Text="{Binding TemplateSettings.DragItemsCount, RelativeSource={RelativeSource Mode=TemplatedParent}}" TextTrimming="WordEllipsis"/>

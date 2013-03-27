@@ -37,11 +37,14 @@ namespace CineSphere
         private static VideoControls Current;
         private Canvas VolumeControlHolder;
         private DispatcherTimer _timer;
+        private DispatcherTimer _controlsTimer;
         private Ellipse ControlBackground;
-        private Ellipse ProgressDot;
+       // private Image ProgressDot;
+        private Canvas ProgressDot;
         private double _CenterX;
         private double _CenterY;
         private TranslateTransform ProgressDotTrans;
+        private RotateTransform ProgressDotRot;
         private Windows.UI.Xaml.Shapes.Path ProgressSliderFrame;
         private Windows.UI.Xaml.Shapes.Path ProgressSlider;
         private double ProgressPosition;
@@ -58,9 +61,15 @@ namespace CineSphere
 
         private double _outerArcModifier;
         private bool _progressHasInteraction;
-        private bool isVisible;
+        public bool isVisible;
         private bool _volumeTouchedDown;
         private bool _isSelectingColor;
+
+        DateTimeOffset startTime;
+        DateTimeOffset lastTime;
+        DateTimeOffset stopTime;
+        int timesTicked = 1;
+        int timesToTick = 15;
 
         private static MediaElement videoPlayer;
 
@@ -86,10 +95,11 @@ namespace CineSphere
             MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
             MyProgressHelper = new ProgressHelper();
-
+            ProgressDot = this.ProgressDots;
 
             this.DrawControls();
             this.hideControls();
+            this.setUpControlTimer();
             videoPlayer = MainPage.Current.vidPlayer;
             videoPlayer.Volume = .5;
             MyProgressHelper.Volume = videoPlayer.Volume * VolumeMax;
@@ -189,30 +199,33 @@ namespace CineSphere
             BindingStrokeA.Source = MyColors;
 
             TransformGroup ProgressDotTransformGroup = new TransformGroup();
-            ProgressDot = new Ellipse();
-            ProgressDot.Width = Diameter / 10;
-            ProgressDot.Height = Diameter / 10;
-            ProgressDot.SetBinding(Shape.FillProperty, BindingBGA);
+
+            ProgressDot.Width = 19;
+            ProgressDot.Height = 29;
+            //ProgressDot.SetBinding(Shape.FillProperty, BindingBGA);
 
             TranslateTransform ProgressDotInitTrans = new TranslateTransform();
             ProgressDotInitTrans.X = -(Canvas.GetLeft(ProgressDot) + ProgressDot.Width / 2);
             ProgressDotInitTrans.Y = -(Canvas.GetTop(ProgressDot) + ProgressDot.Height / 2);
 
             ProgressDotTrans = new TranslateTransform();
-            ProgressDotTrans.X = (_CenterX + (r * _outerArcModifier) * Math.Cos(ProgressMax * rad));
-            ProgressDotTrans.Y = (_CenterY + (r * _outerArcModifier) * Math.Sin(ProgressMax * rad));
+            ProgressDotTrans.X = (_CenterX + (r * _outerArcModifier) * Math.Cos(-90 * rad));
+            ProgressDotTrans.Y = (_CenterY + (r * _outerArcModifier) * Math.Sin(-90 * rad));
 
             ProgressDot.VerticalAlignment = VerticalAlignment.Top;
             ProgressDot.HorizontalAlignment = HorizontalAlignment.Left;
 
+            ProgressDotRot = new RotateTransform();
+            ProgressDotRot.Angle = ProgressMax;
+            ProgressDotRot.CenterX = 0;
+            ProgressDotRot.CenterY = 0;
 
             ProgressDotTransformGroup.Children.Add(ProgressDotInitTrans);
-            ProgressDotTransformGroup.Children.Add(ProgressDotTrans);
-            ProgressDot.RenderTransform = ProgressDotTransformGroup;
+            ProgressDotTransformGroup.Children.Add(ProgressDotRot);
 
-            Debug.WriteLine(ProgressDotTrans.X);
-            Debug.WriteLine(ProgressDotTrans.Y);
-            
+            ProgressDotTransformGroup.Children.Add(ProgressDotTrans);
+
+            ProgressDot.RenderTransform = ProgressDotTransformGroup;            
             
             ProgressSlider = new Windows.UI.Xaml.Shapes.Path();
             ProgressSlider.Data = this.Sector(_CenterX, _CenterY, Diameter - 2, ProgressPosition, ProgressMax);
@@ -227,7 +240,7 @@ namespace CineSphere
 
             PlayBackHolder.Children.Add(ProgressSliderFrame);
             PlayBackHolder.Children.Add(ProgressSlider);
-            PlayBackHolder.Children.Add(ProgressDot);
+           // PlayBackHolder.Children.Add(ProgressDot);
             
 
 
@@ -480,8 +493,13 @@ namespace CineSphere
                 if (ProgressPosition >= ProgressMax) ProgressPosition = ProgressMax;
                 if (ProgressPosition <= ProgressMin) ProgressPosition = ProgressMin;
             }
+            else {
+                _resetTimer();
+            }
             ProgressSlider.Data = this.Sector((Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2), (Canvas.GetTop(ControlBackground) + ControlBackground.Height / 2), Diameter, ProgressPosition, ProgressMax);
 
+            ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? 135 : ProgressPosition+90;
+           
             ProgressDotTrans.X = _CenterX + (r * _outerArcModifier) * Math.Cos(ProgressPosition * rad);
             ProgressDotTrans.Y = _CenterY + (r * _outerArcModifier) * Math.Sin(ProgressPosition * rad);
 
@@ -504,21 +522,32 @@ namespace CineSphere
 
         #region playback Controls
 
-        async void MediaControl_PlayPauseTogglePressed(object sender, object e)
+        async void PlayPauseTogglePressed(object sender, object e)
         {
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 if (videoPlayer.CurrentState == MediaElementState.Playing)
                 {
                     videoPlayer.Pause();
+                    ActualPause.Opacity = 0;
+                    ActualPlay.Opacity = 1;
                 }
                 else
                 {
+                    if (videoPlayer.DefaultPlaybackRate == 0)
+                    {
+                        videoPlayer.DefaultPlaybackRate = 1.0;
+                        videoPlayer.PlaybackRate = 1.0;
+                    }
+
+                    SetupTimer();
                     videoPlayer.Play();
+                    ActualPause.Opacity = 1;
+                    ActualPlay.Opacity = 0;
                 }
             }
-
             );
+
         }
 
         void MediaControl_PlayPressed(object sender, object e)
@@ -546,6 +575,7 @@ namespace CineSphere
 
         private void ColorPicker_Click(object sender, RoutedEventArgs e)
         {
+            _controlsStopTimer();
 
             if (ColorPickerHolder.Opacity.ToString() == "0" || ColorPickerHolder.Visibility.ToString() == "Collapsed")
             {
@@ -638,12 +668,14 @@ namespace CineSphere
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             videoPlayer.Stop();
+
         }
 
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
         {
             videoPlayer.DefaultPlaybackRate = 0.0;
             videoPlayer.PlaybackRate = 4.0;
+            _controlsStopTimer();
         }
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
@@ -652,6 +684,8 @@ namespace CineSphere
             Debug.WriteLine("yes");
             videoPlayer.DefaultPlaybackRate = 0.0;
             videoPlayer.PlaybackRate = -4.0;
+            _controlsStopTimer();
+
         }
 
         private double SliderFrequency(TimeSpan timevalue)
@@ -725,7 +759,7 @@ namespace CineSphere
             if (this.IsFullscreen)
             {
 
-                Current.Visibility = Visibility.Collapsed;
+                hideControls();
 
                 _previousmediasize.Height = videoPlayer.Height;
                 _previousmediasize.Width = videoPlayer.Width;
@@ -742,8 +776,6 @@ namespace CineSphere
             else
             {
 
-                Current.Visibility = Visibility.Visible;
-
                 MainPage.Current.mainGrid.Background = _previousBGColor;
                 MainPage.Current.mainGrid.Margin = _previousmediaelementmargin;
                 MainPage.Current.tintView.Visibility = Visibility.Visible;
@@ -752,6 +784,7 @@ namespace CineSphere
                 videoPlayer.Height = _previousmediasize.Height;
 
             }
+            _resetTimer();
         }
 
         void FullscreenButton_Click(object sender, RoutedEventArgs e)
@@ -824,33 +857,97 @@ namespace CineSphere
 
         private void hideControls()
         {
-            this.Visibility = Visibility.Collapsed;
+
+            
+            VisualStateManager.GoToState(this, "hideController", true);
+            isVisible = false;
+            //videoControllerGrid.Visibility = Visibility.Collapsed;
+           
+
+        }
+
+        private void hideControlsE(object sender, PointerRoutedEventArgs e)
+        {
+            hideControls();
+            MainPage.Current.vidView.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+            pointerpressedstage = new PointerEventHandler(showControls);
+            MainPage.Current.vidView.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
         }
 
         private void showControls(object sender, PointerRoutedEventArgs e)
         {
 
             PointerPoint unpoint = e.GetCurrentPoint(PlayBackHolder);
-
-            if (!isVisible && unpoint.Position.Y > 180)
+            Debug.WriteLine(!isVisible);
+            if (!isVisible)
             {
                 TranslateTransform PositionOfControls = new TranslateTransform();
                 PositionOfControls.X = unpoint.Position.X - 181;
                 PositionOfControls.Y = unpoint.Position.Y - 181;
 
-                //Current.RenderTransform = PositionOfControls;
-                Current.Visibility = Visibility.Visible;
+                VisualStateManager.GoToState(this, "showController", true);
 
-                Debug.WriteLine(Current.Width);
+                //Current.RenderTransform = PositionOfControls;
+                //videoControllerGrid.Visibility = Visibility.Visible;
+
                 isVisible = true;
 
-                MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
-                // pointerpressedstage = new PointerEventHandler(HandleColorChange);
-                // VideoDetailView.Current.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                MainPage.Current.vidView.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                pointerpressedstage = new PointerEventHandler(hideControlsE);
+                MainPage.Current.vidView.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
 
 
             }
+            this._resetTimer();
+
         }
+
+        public void setUpControlTimer()
+        {
+            _controlsTimer = new DispatcherTimer();
+            _controlsTimer.Interval = TimeSpan.FromMilliseconds(200);
+            lastTime = startTime;
+        }
+
+        private void _controlsStartTimer()
+        {
+            _controlsTimer.Tick += _controlsTimer_Tick;
+            _controlsTimer.Start();
+        }
+
+        private void _controlsStopTimer()
+        {
+            _controlsTimer.Stop();
+            _controlsTimer.Tick -= _controlsTimer_Tick;
+        }
+
+        private void _resetTimer()
+        {
+            _controlsTimer.Stop();
+            timesTicked = 1;
+            _controlsTimer.Tick -= _controlsTimer_Tick;
+            _controlsStartTimer();
+
+        }
+
+        private void _controlsTimer_Tick(object sender, object e)
+        {
+            DateTimeOffset time = DateTimeOffset.Now;
+            timesTicked++;
+            if (timesTicked > timesToTick)
+            {
+                stopTime = time;
+                _controlsStopTimer();
+                VisualStateManager.GoToState(this, "hideController", true);
+
+                MainPage.Current.vidView.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                pointerpressedstage = new PointerEventHandler(showControls);
+                MainPage.Current.vidView.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                isVisible = false;
+            }
+
+        }
+
 
         private void Get_Pixel(object sender, PointerRoutedEventArgs e)
         {

@@ -11,17 +11,21 @@
     mc:Ignorable="d">
 
    
-    <Grid Width="360" Height="360" Name="videoControllerGrid">
+    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Collapsed">
 
 
         <Grid Name="Holder"  Width="360" Height="360">
             <Grid Name="PlayBackHolder"  Width="360" Height="360">
 
 
-                <Button x:Name="PlayButton" Width="159" Height="159" Click="PlayButton_Click" BorderThickness="0" Canvas.ZIndex="601" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}" >
+                <Button x:Name="PlayButton" Width="159" Height="159" Click="PlayPauseTogglePressed"  BorderThickness="0" Canvas.ZIndex="601" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}" >
                     <Canvas>
                         <Ellipse Width="159" Height="159" Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-80" Canvas.Top="-80"/>
-                        <Polygon Points="-30,-40 50,0, -30,40" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" />
+                        <Polygon Points="-30,-40 50,0, -30,40" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" Name="ActualPlay" Opacity="0"/>
+                        <Canvas Name="ActualPause">
+                            <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorBS, Mode=OneWay}"  Canvas.Left="-30" Canvas.Top="-40"/>
+                            <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorBS, Mode=OneWay}"  Canvas.Left="10" Canvas.Top="-40"/>
+                        </Canvas>
                     </Canvas>
 
 
@@ -108,7 +112,9 @@
 
                     </TextBlock>
                 </Border>
-
+                <Canvas Name="ProgressDots" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="Assets/scrubber.png"/>
+                </Canvas>
 
 
             </Grid>
@@ -145,6 +151,36 @@
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
+                <VisualState x:Name="CloseVideoView">
+                    <Storyboard>
+                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="showController">
+                    <Storyboard>
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            </ObjectAnimationUsingKeyFrames>
+
+                        </Storyboard>
+                    </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="hideController">
+                    <Storyboard>
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                            </ObjectAnimationUsingKeyFrames>
+
+                        </Storyboard>
+                    </Storyboard>
+                </VisualState>
+
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         

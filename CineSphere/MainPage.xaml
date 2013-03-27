@@ -43,7 +43,7 @@
                     </Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource RemoveAppBarButtonStyle}" Click="RemoveFile"  AutomationProperties.Name="Remove Selection" IsEnabled="False"/>
+                    <!--<Button Style="{StaticResource RemoveAppBarButtonStyle}" Click="RemoveFile"  AutomationProperties.Name="Remove Selection" IsEnabled="False"/>-->
                     <Button Style="{StaticResource FolderAppBarButtonStyle}" Click="AddFolder"  AutomationProperties.Name="Add Folder"/>
                     <!--<Button Style="{StaticResource RemoveAppBarButtonStyle}"  />-->
                     <Button Style="{StaticResource OpenFileAppBarButtonStyle}" Click="AddFile" AutomationProperties.Name="Add File(s)" />
@@ -180,6 +180,53 @@
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
+
+                <VisualState x:Name="OpenVideoView">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="pageTitle" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="CloseVideoView">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="pageTitle" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoView" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                      
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="showController">
+                    <Storyboard>
+   
+                    </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="hideController">
+                    <Storyboard>
+
+                    </Storyboard>
+                </VisualState>
+                
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>

@@ -87,10 +87,12 @@ namespace CineSphere
 
             controls = new VideoControls();
 
+
+
             tintView.DataContext = MyColors;
 
-            videoView.Children.Add(controls);
-
+            MainGrid.Children.Add(controls);
+            Grid.SetRowSpan(controls, 2);
             // Current.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x77, 0x77, 0x77));
 
         }
@@ -106,7 +108,8 @@ namespace CineSphere
                 //mruGridView.SelectedItem = null;
                 itemGridView.ItemsSource = _movieList.GetAll(mru.Path);
             }
-            else {
+            else
+            {
                 itemGridView.ItemsSource = _movieList.GetAll();
 
             }
@@ -118,13 +121,14 @@ namespace CineSphere
 
                 EmptyLibraryView.Visibility = Visibility.Visible;
             }
-            else {
+            else
+            {
 
                 EmptyLibraryView.Visibility = Visibility.Collapsed;
 
             }
 
-           
+
 
         }
 
@@ -206,7 +210,7 @@ namespace CineSphere
                 await ProcessFolderSelection(folder);
             }
 
-           await SetCollectionViewSource();
+            await SetCollectionViewSource();
 
         }
 
@@ -264,25 +268,19 @@ namespace CineSphere
             switch (e)
             {
                 case "Video":
-                    //VisualStateManager.GoToState(this, "Negative", useTransitions);
-                    itemGridView.Visibility = Visibility.Collapsed;
-                    pageTitle.Visibility = Visibility.Collapsed;
 
-                    videoView.Visibility = Visibility.Visible;
-                    backButton.Visibility = Visibility.Visible;
+                    VisualStateManager.GoToState(this, "OpenVideoView", true);
                     MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, controls.pointerpressedstage, true);
-
                     break;
 
                 case "Library":
                     // VisualStateManager.GoToState(this, "Negative", useTransitions);
                     videoPlayer.Stop();
 
-                    itemGridView.Visibility = Visibility.Visible;
-                    pageTitle.Visibility = Visibility.Visible;
-
-                    videoView.Visibility = Visibility.Collapsed;
-                    backButton.Visibility = Visibility.Collapsed;
+                    VisualStateManager.GoToState(this, "CloseVideoView", true);
+                    VisualStateManager.GoToState(controls, "CloseVideoView", true);
+                    controls.isVisible = false;
+                    //controls.Visibility = Visibility.Collapsed;
                     MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, controls.pointerpressedstage);
 
                     break;
@@ -290,10 +288,10 @@ namespace CineSphere
 
         }
 
+        private void startControllerTimeout() {}
+
         public async void itemGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-
-
             var item = ((VideoViewModel)e.ClickedItem);
             await SetMediaElementSourceAsync(item);
             switchViews("Video");
@@ -322,7 +320,7 @@ namespace CineSphere
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
         {
-            //
+            switchViews("colorPicker");
         }
 
         private void RemoveFile(object sender, RoutedEventArgs e)
