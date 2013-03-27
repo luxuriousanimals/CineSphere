@@ -171,6 +171,8 @@ namespace CineSphere
 
             pointerpressedstage = new PointerEventHandler(showControls);
 
+            PointerEventHandler pointerovercontrols = new PointerEventHandler(_resetTimerHandler);
+            Holder.AddHandler(Control.PointerMovedEvent, pointerovercontrols, true);
         }
 
         private void CreateProgressElement()
@@ -760,6 +762,7 @@ namespace CineSphere
             }
             else
             {
+                hideControls();
 
                 MainPage.Current.mainGrid.Background = _previousBGColor;
                 MainPage.Current.mainGrid.Margin = _previousmediaelementmargin;
@@ -849,10 +852,10 @@ namespace CineSphere
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
             var ttv = Holder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
-            Debug.WriteLine(unpoint.Position.Y);
-            Debug.WriteLine(screenCoords.Y);
-            if (!(unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && !(unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
-            {
+            Debug.WriteLine(!(unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && !(unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y));
+            if ((unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
+            { }
+            else {
                 hideControls();
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
                 pointerpressedstage = new PointerEventHandler(showControls);
@@ -905,6 +908,15 @@ namespace CineSphere
         }
 
         private void _resetTimer()
+        {
+            _controlsTimer.Stop();
+            timesTicked = 1;
+            _controlsTimer.Tick -= _controlsTimer_Tick;
+            _controlsStartTimer();
+
+        }
+
+        private void _resetTimerHandler(object sender, PointerRoutedEventArgs e)
         {
             _controlsTimer.Stop();
             timesTicked = 1;

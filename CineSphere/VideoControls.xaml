@@ -11,7 +11,7 @@
     mc:Ignorable="d">
 
    
-    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Collapsed" Background="AliceBlue">
+    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Collapsed">
 
 
         <Grid Name="Holder"  Width="360" Height="360">

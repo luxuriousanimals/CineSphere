@@ -41,7 +41,7 @@ namespace CineSphere
         public VideoControls controls;
         public MediaElement vidPlayer;
         public MineColorHelper MyColors = new MineColorHelper();
-        private Pointer pressedMainGrid;
+        private PointerEventHandler pointerpressedMainGrid;
 
         public bool IsFullscreen { set; get; }
 
@@ -284,8 +284,12 @@ namespace CineSphere
                     break;
 
                 case "colorPicker":
-                    Debug.WriteLine("this thing works");
                     VisualStateManager.GoToState(controls, "showColorPicker", true);
+
+                    break;
+
+                case "colorPickerClose":
+                    VisualStateManager.GoToState(controls, "resetColorPicker", true);
 
                     break;
             }
@@ -325,6 +329,15 @@ namespace CineSphere
             switchViews("colorPicker");
             bottomAppBar.IsOpen = false;
 
+            pointerpressedMainGrid = new PointerEventHandler(hidePicker);
+            MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedMainGrid, true);
+        }
+
+        private void hidePicker(object sender, PointerRoutedEventArgs e)
+        {
+            switchViews("colorPickerClose");
+
+            MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedMainGrid);
         }
 
         private void RemoveFile(object sender, RoutedEventArgs e)
