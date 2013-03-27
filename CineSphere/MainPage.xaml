@@ -117,12 +117,9 @@
             SelectionMode="None"
             IsSwipeEnabled="false"/>
 
-        <Grid Name="EmptyLibraryView" Grid.Row="1" Margin="60,40,116,46" Visibility="Visible" Width="380" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FFE1E7EE">
-            <TextBlock Margin="20,20,20,20"  TextWrapping="Wrap" Text="Hey bub, give me something to work with here." FontSize="22" HorizontalAlignment="Left" Foreground="Black"/>
-            <StackPanel Margin="20,216,20,20" Orientation="Horizontal" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Height="84" >
-                <StackPanel.Background>
-                    <SolidColorBrush Color="Black"  Opacity=".6"/>
-                </StackPanel.Background>
+        <Grid Name="EmptyLibraryView" Grid.Row="1" Margin="60,40,116,46" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+            <StackPanel Margin="0,20,20,20" Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Height="168" >
+               
                 <Button Style="{StaticResource FolderAppBarButtonStyle}" Click="AddFolder"  AutomationProperties.Name="Add Folder"/>
                 <!--<Button Style="{StaticResource RemoveAppBarButtonStyle}"  />-->
                 <Button Style="{StaticResource OpenFileAppBarButtonStyle}" Click="AddFile" AutomationProperties.Name="Add File(s)" />

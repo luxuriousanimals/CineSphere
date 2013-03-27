@@ -148,10 +148,8 @@ namespace CineSphere
             ControlBackground.Stroke = MyColors.StrokeColorA;
             ControlBackground.DataContext = MyColors;
 
-            _CenterX = (Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2);
-            _CenterY = (Canvas.GetTop(ControlBackground) + ControlBackground.Height / 2);
-
-            Debug.WriteLine((Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2));
+            _CenterX = (Canvas.GetLeft(PlayBackHolder) + PlayBackHolder.Width / 2);
+            _CenterY = (Canvas.GetTop(PlayBackHolder) + PlayBackHolder.Height / 2);
 
             TranslateTransform CenterCircle = new TranslateTransform();
             CenterCircle.X = Window.Current.Bounds.Width / 2 - ControlBackground.Width / 2;
@@ -204,11 +202,18 @@ namespace CineSphere
             ProgressDotTrans.X = (_CenterX + (r * _outerArcModifier) * Math.Cos(ProgressMax * rad));
             ProgressDotTrans.Y = (_CenterY + (r * _outerArcModifier) * Math.Sin(ProgressMax * rad));
 
+            ProgressDot.VerticalAlignment = VerticalAlignment.Top;
+            ProgressDot.HorizontalAlignment = HorizontalAlignment.Left;
+
+
             ProgressDotTransformGroup.Children.Add(ProgressDotInitTrans);
             ProgressDotTransformGroup.Children.Add(ProgressDotTrans);
             ProgressDot.RenderTransform = ProgressDotTransformGroup;
 
-
+            Debug.WriteLine(ProgressDotTrans.X);
+            Debug.WriteLine(ProgressDotTrans.Y);
+            
+            
             ProgressSlider = new Windows.UI.Xaml.Shapes.Path();
             ProgressSlider.Data = this.Sector(_CenterX, _CenterY, Diameter - 2, ProgressPosition, ProgressMax);
             ProgressSlider.Fill = new SolidColorBrush(Color.FromArgb(168, 255, 255, 255));
@@ -223,6 +228,7 @@ namespace CineSphere
             PlayBackHolder.Children.Add(ProgressSliderFrame);
             PlayBackHolder.Children.Add(ProgressSlider);
             PlayBackHolder.Children.Add(ProgressDot);
+            
 
 
             Binding posBinding = new Binding();
