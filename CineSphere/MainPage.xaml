@@ -18,12 +18,7 @@
             IsSourceGrouped="True"
             />
 
-        <CollectionViewSource
-            x:Name="mruViewSource"
-            Source="{Binding MRUItem}" 
-            IsSourceGrouped="True"
-            />
-
+        
         <common:MineColorHelper x:Key="MineColorHelper" StrokeColorC="AntiqueWhite"></common:MineColorHelper>
 
     </Page.Resources>
@@ -69,24 +64,7 @@
         <Grid Name="TintView" Opacity=".1" Grid.RowSpan="2" Visibility="Collapsed" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding ProgressFrameFillColor, Mode=OneWay}" IsHitTestVisible="False"/>
 
 
-        <GridView
-            x:Name="mruGridView"
-            AutomationProperties.AutomationId="MRUGridView"
-            AutomationProperties.Name="MRUItem"
-            TabIndex="1"
-            Grid.RowSpan="4"
-            Grid.ColumnSpan="4"
-            Padding="60,136,116,46"
-            ItemTemplate="{StaticResource CircularLibraryGrid380x460}"
-            ItemsSource="{Binding Source={StaticResource mruViewSource}}"
-            IsItemClickEnabled="True"
-            SelectionMode="Single"
-            IsSwipeEnabled="false" 
-            ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
-            />
-
-
-        <!-- Horizontal scrolling grid used in most view states -->
+       <!-- Horizontal scrolling grid used in most view states -->
         <common:GridViewOverride
             x:Name="itemGridView"
             AutomationProperties.AutomationId="ItemsGridView"
@@ -98,9 +76,46 @@
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
             IsItemClickEnabled="True"
             SelectionMode="Multiple"
-            IsSwipeEnabled="false" 
-            ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
-            />
+            IsSwipeEnabled="True"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            >
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VariableSizedWrapGrid ItemHeight="200" ItemWidth="200" MaximumRowsOrColumns="6" Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+            <!--<GridView.GroupStyle>
+                <GroupStyle HidesIfEmpty="True">
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Background="LightGray" Margin="0">
+                                <TextBlock Text='{Binding Size}' 
+                                   Foreground="Black" Margin="30"
+                                   Style="{StaticResource HeaderTextStyle}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="GroupItem">
+                            <Setter Property="MinWidth" Value="600"/>
+                            <Setter Property="BorderBrush" Value="DarkGray"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="Margin" Value="3,0"/>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+
+                    <GroupStyle.Panel>
+                        <ItemsPanelTemplate>
+                            <VariableSizedWrapGrid/>
+                        </ItemsPanelTemplate>
+                    </GroupStyle.Panel>
+                </GroupStyle>
+            </GridView.GroupStyle>-->
+        </common:GridViewOverride>
+            <!--ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
+            />-->
 
         <!-- Vertical scrolling list only used when snapped -->
         <ListView

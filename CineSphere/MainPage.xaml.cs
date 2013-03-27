@@ -41,8 +41,7 @@ namespace CineSphere
         public VideoControls controls;
         public MediaElement vidPlayer;
         public MineColorHelper MyColors = new MineColorHelper();
-        //public ObservableCollection<VideoViewModel> videosGrid = null;
-        //public VideoViewModel video = null;
+        private PointerEventHandler pointerpressedMainGrid;
 
         public bool IsFullscreen { set; get; }
 
@@ -99,7 +98,6 @@ namespace CineSphere
 
         async Task SetCollectionViewSource()
         {
-            Debug.WriteLine("makes it here ");
             IStorageItem mru = null;
             if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
             {
@@ -266,7 +264,8 @@ namespace CineSphere
         private void switchViews(String e)
         {
             switch (e)
-            {   case "Video":
+            {
+                case "Video":
 
                     VisualStateManager.GoToState(this, "OpenVideoView", true);
                     MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, controls.pointerpressedstage, true);
@@ -285,19 +284,24 @@ namespace CineSphere
                     break;
 
                 case "colorPicker":
-                    Debug.WriteLine("this thing works");
                     VisualStateManager.GoToState(controls, "showColorPicker", true);
+
+                    break;
+
+                case "colorPickerClose":
+                    VisualStateManager.GoToState(controls, "resetColorPicker", true);
 
                     break;
             }
 
         }
 
-        private void startControllerTimeout() {}
-
         public async void itemGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
+            Debug.WriteLine("break here? 5");
             var item = ((VideoViewModel)e.ClickedItem);
+            Debug.WriteLine("break here? 3");
+
             await SetMediaElementSourceAsync(item);
             switchViews("Video");
 
@@ -305,22 +309,35 @@ namespace CineSphere
 
         private async Task SetMediaElementSourceAsync(VideoViewModel file)
         {
+            Debug.WriteLine("break here? 1");
 
             StorageFile video = await Windows.Storage.StorageFile.GetFileFromPathAsync(file.Path);
             var stream = await video.OpenAsync(Windows.Storage.FileAccessMode.Read);
             MediaControl.TrackName = video.DisplayName;
             videoPlayer.SetSource(stream, video.ContentType);
+            Debug.WriteLine("break here? 2");
 
             videoPlayer.Play();
 
             Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("LastUsedFile", video, "metadata");
 
         }
-       
+
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
         {
             switchViews("colorPicker");
+            bottomAppBar.IsOpen = false;
+
+            pointerpressedMainGrid = new PointerEventHandler(hidePicker);
+            MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedMainGrid, true);
+        }
+
+        private void hidePicker(object sender, PointerRoutedEventArgs e)
+        {
+            switchViews("colorPickerClose");
+
+            MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedMainGrid);
         }
 
         private void RemoveFile(object sender, RoutedEventArgs e)

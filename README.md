@@ -1,6 +1,6 @@
 CineSphere 
 ==========
-(version 0.82-PreRelease) [https://github.com/luxuriousanimals/CineSphere](https://github.com/luxuriousanimals/CineSphere)
+(version 0.83-PreRelease) [https://github.com/luxuriousanimals/CineSphere](https://github.com/luxuriousanimals/CineSphere)
 
 CineSphere is an open-source video player built in Visual C# for Windows 8 and Microsoft Surface. It is an experiment done to learn XAML, and the nuances of development for Windows 8 tablet devices. 
 
@@ -12,5 +12,9 @@ CineSphere is an open-source video player built in Visual C# for Windows 8 and M
 
 TODO
 ====
-Dynamic Gridview Size 
+
+User Feedback (loading)
+
 Core Animation
+
+Bug Fixes
