@@ -156,6 +156,21 @@ namespace CineSphere.ViewModels
             }
         }
 
+        private int _size = 0;
+        public int Size
+        {
+            get
+            {
+                return _size;
+            }
+
+            set
+            {
+                _size = value;
+                RaisePropertyChanged("Size");
+            }
+        }
+
         #endregion "Properties"
 
         //public VideoViewModel GetVideo(int videoId)

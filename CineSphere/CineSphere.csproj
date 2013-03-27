@@ -103,6 +103,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\GridViewOverride.cs" />
     <Compile Include="Common\MineColorHelper.cs" />
     <Compile Include="Common\ProgressHelper.cs" />
     <Compile Include="Common\SQLite.cs" />

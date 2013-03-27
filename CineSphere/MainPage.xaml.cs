@@ -218,7 +218,7 @@ namespace CineSphere
         {
 
 
-            var tn = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView);
+            var tn = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
             string x = await SaveImageLocal(tn, file.Name);
             _movieList.Add(new Video { Title = file.Name, Subtitle = file.FileType, Img = x, Path = file.Path });
 

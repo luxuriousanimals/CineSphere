@@ -87,7 +87,7 @@
 
 
         <!-- Horizontal scrolling grid used in most view states -->
-        <GridView
+        <common:GridViewOverride
             x:Name="itemGridView"
             AutomationProperties.AutomationId="ItemsGridView"
             AutomationProperties.Name="Items"
