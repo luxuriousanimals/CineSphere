@@ -17,6 +17,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
 using Windows.UI;
+using Windows.UI.Input;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -377,9 +378,18 @@ namespace CineSphere
 
         private void hidePicker(object sender, PointerRoutedEventArgs e)
         {
-            switchViews("colorPickerClose");
-
-            MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedMainGrid);
+            
+            PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
+            var ttv = controls.RefHolder.TransformToVisual(Window.Current.Content);
+            Point screenCoords = ttv.TransformPoint(new Point(0, 0));
+            if ((unpoint.Position.X <= screenCoords.X + controls.RefHolder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + controls.RefHolder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
+            { }
+            else {
+                
+                switchViews("colorPickerClose");
+                MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedMainGrid);
+            }
+         
         }
 
         private void RemoveFile(object sender, RoutedEventArgs e)

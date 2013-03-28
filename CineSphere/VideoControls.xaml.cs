@@ -72,15 +72,15 @@ namespace CineSphere
 
         private MineColorHelper MyColors = MainPage.Current.MyColors;
         private ProgressHelper MyProgressHelper;
-
+        public Grid RefHolder;
 
         public VideoControls()
         {
-            Current = this;
 
 
             this.InitializeComponent();
-
+            Current = this;
+            RefHolder = Holder;
 
             MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
             MyColors.ProgressFrameFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
@@ -702,6 +702,8 @@ namespace CineSphere
 
             string objstring = obj.ToString();
 
+            Debug.WriteLine(objstring);
+
             if (!objstring.Equals("#FF767676", StringComparison.Ordinal))
             {
 
@@ -941,7 +943,13 @@ namespace CineSphere
 
             if (_isSelectingColor)
             {
+
+                Debug.WriteLine((int)screenCoords.X + (int)unpoint.Position.X);
+                Debug.WriteLine((int)screenCoords.Y + (int)unpoint.Position.Y);
+
                 Color newColor = Win32.GetPixelColor((int)screenCoords.X + (int)unpoint.Position.X, (int)screenCoords.Y + (int)unpoint.Position.Y);
+
+
                 HandleColorChange(newColor);
             }
 
@@ -972,8 +980,17 @@ namespace CineSphere
 
             if (_isSelectingColor)
             {
+
+                Debug.WriteLine("x " + ((int)screenCoords.X + (int)unpoint.Position.X));
+
+                Debug.WriteLine("y " + ((int)screenCoords.Y + (int)unpoint.Position.Y));
+
                 Color newColor = Win32.GetPixelColor((int)screenCoords.X + (int)unpoint.Position.X, (int)screenCoords.Y + (int)unpoint.Position.Y);
                 HandleColorChange(newColor);
+
+                
+
+
             }
 
         }
