@@ -875,6 +875,8 @@ namespace CineSphere
                     Window.Current.Bounds.Bottom - videoControllerGrid.Height :
                     unpoint.Position.Y - videoControllerGrid.Height / 2);
 
+            if (unpoint.Position.Y < 60 && unpoint.Position.Y < 60) return;
+
 
             if (!isVisible)
             {
