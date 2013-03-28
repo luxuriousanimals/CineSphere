@@ -25,17 +25,19 @@ namespace CineSphere.Data
     public class MovieList
         {
             private static readonly string _dbPath = App.DBPath;
+           // public ObservableCollection<VideoViewModel> list = new ObservableCollection<VideoViewModel>();
 
 
             public void Add(Video video)
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
-                    var exisitngItem = (connection.Table<Video>().Where(
+                    var existingItem = (connection.Table<Video>().Where(
                v => v.Path == video.Path)).SingleOrDefault();
 
-                    if (exisitngItem == null)
+                    if (existingItem == null)
                     {
+                        Debug.WriteLine("inserts");
                         connection.Insert(video);
                     }
                     else {
@@ -82,6 +84,7 @@ namespace CineSphere.Data
                                         Path = _video.Path
 
                                     };
+                                    Debug.WriteLine("added");
                                     list.Add(videes);
                                 }
                             } else {
@@ -121,29 +124,11 @@ namespace CineSphere.Data
             }
 
 
-            public ObservableCollection<VideoViewModel> GetMRU(string e)
-            {
-                var list = new ObservableCollection<VideoViewModel>();
-                using (var db = new SQLiteConnection(_dbPath))
-                {
+            //public ObservableCollection<VideoViewModel> GetMRU(string e)
+            //{
+             
 
-                        var query = db.Table<Video>().First(v => v.Path == e);
-                       
-                            var videes = new VideoViewModel()
-                            {
-                                Title = query.Title,
-                                Subtitle = query.Subtitle,
-                                Img = pathToImage(query.Img),
-                                Path = query.Path
-
-                            };
-                            list.Add(videes);
-                       
-                  
-                }
-                return list;
-
-            }
+            //}
 
             public string pathToImage(string path)
             {

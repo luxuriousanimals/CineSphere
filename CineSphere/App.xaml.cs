@@ -1,10 +1,10 @@
 ﻿using CineSphere.Common;
 using CineSphere.Model;
-
 using System;
 using System.IO;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -108,8 +108,8 @@ namespace CineSphere
             using (var db = new SQLiteConnection(DBPath))
             {
 
-             //  db.DeleteAll<Video>();
-
+                //db.DeleteAll<Video>();
+                //StorageApplicationPermissions.FutureAccessList.Clear();
             }
         }
 

@@ -6,19 +6,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:CineSphere"
     xmlns:common="using:CineSphere.Common"
+    xmlns:data="using:CineSphere.Data"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
 
     <Page.Resources>
-        <CollectionViewSource
-            x:Name="itemsViewSource"
-            Source="{Binding Items}" 
-            IsSourceGrouped="True"
-            />
+        <CollectionViewSource x:Name="videoList" IsSourceGrouped="True"/>
 
-        
         <common:MineColorHelper x:Key="MineColorHelper" StrokeColorC="AntiqueWhite"></common:MineColorHelper>
 
     </Page.Resources>
@@ -71,15 +67,20 @@
             AutomationProperties.Name="Items"
             TabIndex="1"
             Grid.RowSpan="2"
-            Padding="60,136,116,46"
+            Padding="60,136,116,20"
             ItemTemplate="{StaticResource CircularLibraryGrid140x180}"
-            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
             IsItemClickEnabled="True"
             SelectionMode="Multiple"
             IsSwipeEnabled="True"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
+            ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}"
             >
+            <GridView.Transitions>
+            <TransitionCollection>
+                <!--<EntranceThemeTransition/>-->
+            </TransitionCollection>
+            </GridView.Transitions>
             <!--<GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VariableSizedWrapGrid ItemHeight="200" ItemWidth="200" MaximumRowsOrColumns="6" Orientation="Vertical"/>
@@ -127,7 +128,7 @@
             Visibility="Collapsed"
             Margin="0,-10,0,0"
             Padding="10,0,0,60"
-            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+            ItemsSource="{Binding Source={StaticResource videoList}}"
             ItemTemplate="{StaticResource Standard80ItemTemplate}"
             SelectionMode="None"
             IsSwipeEnabled="false"/>
@@ -144,6 +145,19 @@
         <Grid Name="videoView" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
             <MediaElement Name="videoPlayer"  HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Grid>
+
+        <Border Grid.RowSpan="2" Grid.Column="2" Width="Auto" Name="ShowProgressBar" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed">
+            <Border.Transitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition FromHorizontalOffset="0" IsStaggeringEnabled="False"/>
+                </TransitionCollection>
+            </Border.Transitions>
+            <Border.Background>
+                <SolidColorBrush Color="Black" Opacity=".2" />
+            </Border.Background>
+            <StackPanel Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <ProgressBar  x:Name="pg2"  Width="140" IsIndeterminate="True" FontSize="26"/>            </StackPanel>
+        </Border>
 
         <Grid >
             <Grid.ColumnDefinitions>

@@ -196,8 +196,8 @@ namespace CineSphere
 
             TransformGroup ProgressDotTransformGroup = new TransformGroup();
 
-            ProgressDot.Width = 19;
-            ProgressDot.Height = 29;
+            ProgressDot.Width = 60;
+            ProgressDot.Height = 40;
             //ProgressDot.SetBinding(Shape.FillProperty, BindingBGA);
 
             TranslateTransform ProgressDotInitTrans = new TranslateTransform();
@@ -205,14 +205,14 @@ namespace CineSphere
             ProgressDotInitTrans.Y = -(Canvas.GetTop(ProgressDot) + ProgressDot.Height / 2);
 
             ProgressDotTrans = new TranslateTransform();
-            ProgressDotTrans.X = (_CenterX + (r * _outerArcModifier) * Math.Cos(-90 * rad));
-            ProgressDotTrans.Y = (_CenterY + (r * _outerArcModifier) * Math.Sin(-90 * rad));
+            ProgressDotTrans.X = (_CenterX + (r * _outerArcModifier) * Math.Cos(ProgressMax * rad));
+            ProgressDotTrans.Y = (_CenterY + (r * _outerArcModifier) * Math.Sin(ProgressMax * rad));
 
             ProgressDot.VerticalAlignment = VerticalAlignment.Top;
             ProgressDot.HorizontalAlignment = HorizontalAlignment.Left;
 
             ProgressDotRot = new RotateTransform();
-            ProgressDotRot.Angle = ProgressMax;
+            ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? ProgressMax +90 : ProgressPosition + 90;
             ProgressDotRot.CenterX = 0;
             ProgressDotRot.CenterY = 0;
 
@@ -301,15 +301,15 @@ namespace CineSphere
 
             PointerEventHandler pointerlosthandler = new PointerEventHandler(volume_PointerCaptureLost);
             VolumeControlHolder.AddHandler(Control.PointerCaptureLostEvent, pointerlosthandler, true);
-            MainPage.Current.vidView.AddHandler(Control.PointerCaptureLostEvent, pointerlosthandler, true);
+            MainPage.Current.mainGrid.AddHandler(Control.PointerCaptureLostEvent, pointerlosthandler, true);
 
             PointerEventHandler pointerreleasedhandler = new PointerEventHandler(volume_PointerCaptureLost);
             VolumeControlHolder.AddHandler(Control.PointerReleasedEvent, pointerreleasedhandler, true);
-            MainPage.Current.vidView.AddHandler(Control.PointerReleasedEvent, pointerreleasedhandler, true);
+            MainPage.Current.mainGrid.AddHandler(Control.PointerReleasedEvent, pointerreleasedhandler, true);
 
             PointerEventHandler pointerdraggedhandler = new PointerEventHandler(volume_dragged);
             VolumeControlHolder.AddHandler(Control.PointerMovedEvent, pointerdraggedhandler, true);
-            MainPage.Current.vidView.AddHandler(Control.PointerMovedEvent, pointerdraggedhandler, true);
+            MainPage.Current.mainGrid.AddHandler(Control.PointerMovedEvent, pointerdraggedhandler, true);
 
         }
 
@@ -387,8 +387,6 @@ namespace CineSphere
             return pathGeometry;
         }
 
-
-
         #region progress Control Logic
 
         void Progress_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -396,8 +394,6 @@ namespace CineSphere
             Debug.WriteLine("click capture");
 
             videoPlayer.DefaultPlaybackRate = 0.0;
-
-
 
             PointerPoint unpoint = e.GetCurrentPoint(PlayBackHolder);
 
@@ -410,6 +406,7 @@ namespace CineSphere
             videoPlayer.Pause();
 
             _progressHasInteraction = true;
+            _controlsStopTimer();
         }
 
         void Progress_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
@@ -423,6 +420,7 @@ namespace CineSphere
                 videoPlayer.DefaultPlaybackRate = 1.0;
                 videoPlayer.PlaybackRate = 1.0;
                 videoPlayer.Play();
+                _resetTimer();
             }
         }
 
@@ -446,20 +444,16 @@ namespace CineSphere
                 videoPlayer.Position = TimeSpan.FromMilliseconds((ProgressMax - ProgressPosition) / (ProgressMax - ProgressMin) * videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds);
                 MyProgressHelper.VideoPosition = videoPlayer.Position.TotalMilliseconds;
 
-                //if (ProgressPosition >= ProgressMax) ProgressPosition = ProgressMax;
-                //if (ProgressPosition <= ProgressMin) ProgressPosition = ProgressMin;
-                //if (ProgressPosition >= ProgressMax || ProgressPosition <= ProgressMin) _progressHasInteraction = false;
 
             }
         }
         #endregion
 
-
         #region timer logic
+
         private void SetupTimer()
         {
             _timer = new DispatcherTimer();
-            //_timer.Interval = TimeSpan.FromMilliseconds(100);
             _timer.Interval = TimeSpan.FromMilliseconds(SliderFrequency(videoPlayer.NaturalDuration.TimeSpan));
             MyProgressHelper.VideoPosition = SliderFrequency(videoPlayer.NaturalDuration.TimeSpan);
             StartTimer();
@@ -471,8 +465,7 @@ namespace CineSphere
             {
                 MyProgressHelper.VideoPosition = videoPlayer.Position.TotalMilliseconds;
                 ProgressPosition = ProgressMax - (videoPlayer.Position.TotalMilliseconds / videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds) * (ProgressMax - ProgressMin);
-                //Debug.WriteLine(videoPlayer.Position.TotalMilliseconds * SliderFrequency(videoPlayer.NaturalDuration.TimeSpan));
-
+        
                 if (ProgressPosition >= ProgressMax) ProgressPosition = ProgressMax;
                 if (ProgressPosition <= ProgressMin) ProgressPosition = ProgressMin;
             }
@@ -481,13 +474,11 @@ namespace CineSphere
             }
             ProgressSlider.Data = this.Sector((Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2), (Canvas.GetTop(ControlBackground) + ControlBackground.Height / 2), Diameter, ProgressPosition, ProgressMax);
 
-            ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? 135 : ProgressPosition+90;
+            ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? ProgressMax + 90 : ProgressPosition + 90;
            
             ProgressDotTrans.X = _CenterX + (r * _outerArcModifier) * Math.Cos(ProgressPosition * rad);
             ProgressDotTrans.Y = _CenterY + (r * _outerArcModifier) * Math.Sin(ProgressPosition * rad);
 
-
-            //if (ProgressPosition >= ProgressMax) this.StopTimer();
         }
 
         private void StartTimer()
@@ -790,7 +781,6 @@ namespace CineSphere
 
         #endregion
 
-
         #region volume control logic
 
         private void volume_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -799,22 +789,18 @@ namespace CineSphere
 
             double newVolumePosition = Math.Max(Math.Min(Math.Floor(VolumeMax - unpoint.Position.Y), VolumeMax), VolumeMin);
 
-
             videoPlayer.Volume = Math.Floor(newVolumePosition) / VolumeMax;
-
-            //Debug.WriteLine("liteup " + newVolumePosition / 13);
-
-            //double newPoint = ((((Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI) * 180)) - _CenterX);
 
             MyProgressHelper.Volume = newVolumePosition;
 
-
             _volumeTouchedDown = true;
+            _controlsStopTimer();
         }
 
         private void volume_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
         {
             _volumeTouchedDown = false;
+            _resetTimer();
         }
 
         void volume_dragged(object sender, PointerRoutedEventArgs e)
@@ -836,7 +822,8 @@ namespace CineSphere
         }
         #endregion
 
-
+        #region Control Visible Logic
+     
         private void hideControls()
         {
 
@@ -941,7 +928,7 @@ namespace CineSphere
             }
 
         }
-
+        #endregion
 
         private void Get_Pixel(object sender, PointerRoutedEventArgs e)
         {

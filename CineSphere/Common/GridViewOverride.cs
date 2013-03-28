@@ -19,25 +19,28 @@ namespace CineSphere.Common
      
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
+
+        
             var obj = item as VideoViewModel;
             var gi = element as GridViewItem;
 
-            
-            if (obj.isMRU)
-            {
-                obj.Size = 140;
-                gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle1"] as Style;
-                //gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
-                //gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
-               // gi.Template = (DataTemplate)Application.Current.Resources["IconGridDataTemplate"] as DataTemplate;
-            }
-            else {
 
-                obj.Size = 140;
-                gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle1"] as Style;
-                //gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
-                //gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
-            }
+            
+            ////if (obj.isMRU)
+            ////{
+            ////    obj.Size = 140;
+            ////    gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle1"] as Style;
+            ////    //gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
+            ////    //gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
+            ////   // gi.Template = (DataTemplate)Application.Current.Resources["IconGridDataTemplate"] as DataTemplate;
+            ////}
+            ////else {
+
+            obj.Size = 140;
+            gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle1"] as Style;
+            //    //gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
+            //    //gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
+            ////}
 
             base.PrepareContainerForItemOverride(gi, item);
         }
@@ -49,7 +52,6 @@ namespace CineSphere.Common
     {
         public object Convert(object value, Type targetType, object parameter, string s)
         {
-            Debug.WriteLine(value);
             if ((int)value == 420) {
                 value = 500;
             } else {
@@ -70,7 +72,6 @@ namespace CineSphere.Common
     {
         public object Convert(object value, Type targetType, object parameter, string s)
         {
-            Debug.WriteLine(value);
             if ((int)value == 420)
             {
                 value = 28;
@@ -94,7 +95,6 @@ namespace CineSphere.Common
     {
         public object Convert(object value, Type targetType, object parameter, string s)
         {
-            Debug.WriteLine(value);
             if ((int)value == 420)
             {
                 value = 28*1.8;

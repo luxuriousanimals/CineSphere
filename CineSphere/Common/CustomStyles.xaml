@@ -14,9 +14,11 @@
     <local:ReturnFontAdjusted x:Key="ReturnFontAdjusted"/>
     <local:ReturnHeightAdjusted x:Key="ReturnHeightAdjusted"/>
 
+    <x:String x:Key="ProgressBarIndeterminateForegroundThemeBrush">White</x:String>
+
     <!-- Rounded Ellipse with masking   -->
     <DataTemplate x:Key="CircularLibraryGrid140x180" >
-        <Grid Width="{Binding Size}" Height="{Binding Size, Converter={StaticResource AddSizeToHeight}}" Name="ContentKeyHolder" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Grid Width="{Binding Size}" Height="{Binding Size, Converter={StaticResource AddSizeToHeight}}" Name="ContentKeyHolder" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4">
 
             <Ellipse Width="{Binding Size}" Height="{Binding Size}" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Ellipse.Fill>
@@ -413,9 +415,9 @@
                                             <Rectangle x:Name="MultiArrangeOverlayBackground" Fill="{StaticResource ListViewItemDragBackgroundThemeBrush}" IsHitTestVisible="False" Opacity="0"/>-->
                                         </Grid>
                                     </Border>
-                                    <Ellipse x:Name="PointerOverBorder" StrokeThickness="8" Stroke="{Binding StrokeColorC,Source={StaticResource MineColorHelper}}" Opacity="0" Width="140" Height="140" VerticalAlignment="Top" DataContext="{StaticResource MineColorHelper}"   />
+                                    <Ellipse x:Name="PointerOverBorder" StrokeThickness="8" Margin="4" Stroke="{Binding StrokeColorC,Source={StaticResource MineColorHelper}}" Opacity="0" Width="140" Height="140" VerticalAlignment="Top" DataContext="{StaticResource MineColorHelper}"   />
                                     <Ellipse x:Name="FocusVisual" Opacity="0" Margin="4" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="8" Width="140" Height="140" VerticalAlignment="Top"/>
-                                    <Ellipse x:Name="SelectedBorder"  Width="140" Height="140" IsHitTestVisible="False" Opacity="0" Stroke="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" StrokeThickness="10" VerticalAlignment="Top" />
+                                    <Ellipse x:Name="SelectedBorder"  Margin="4" Width="140" Height="140" IsHitTestVisible="False" Opacity="0" Stroke="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" StrokeThickness="10" VerticalAlignment="Top" />
                                     
                                     <TextBlock x:Name="MultiArrangeOverlayText" Foreground="{StaticResource ListViewItemDragForegroundThemeBrush}" FontSize="26.667" FontFamily="{StaticResource ContentControlThemeFontFamily}" IsHitTestVisible="False" Margin="18,9,0,0" Opacity="0" TextWrapping="Wrap" Text="{Binding TemplateSettings.DragItemsCount, RelativeSource={RelativeSource Mode=TemplatedParent}}" TextTrimming="WordEllipsis"/>
 
@@ -645,7 +647,7 @@
                             </VisualStateGroup>
                             
                         </VisualStateManager.VisualStateGroups>
-                        <Grid x:Name="ReorderHintContent" Background="Transparent" Margin="0,0,60,20">
+                        <Grid x:Name="ReorderHintContent" Background="Transparent" Margin="0,0,60,10">
                             <Path x:Name="SelectingGlyph" Data="F1 M133.1,17.9 L137.2,13.2 L144.6,19.6 L156.4,5.8 L161.2,9.9 L145.6,28.4 z" Fill="{StaticResource ListViewItemCheckSelectingThemeBrush}" FlowDirection="LeftToRight" HorizontalAlignment="Right" Height="13" Margin="0,9.5,9.5,0" Opacity="0" Stretch="Fill" VerticalAlignment="Top" Width="15"/>
                             <Border x:Name="HintGlyphBorder" HorizontalAlignment="Right" Height="40" Margin="4" Opacity="0" VerticalAlignment="Top" Width="40">
                                 <Path x:Name="HintGlyph" Data="F1 M133.1,17.9 L137.2,13.2 L144.6,19.6 L156.4,5.8 L161.2,9.9 L145.6,28.4 z" Fill="{StaticResource ListViewItemCheckHintThemeBrush}" FlowDirection="LeftToRight" HorizontalAlignment="Right" Height="13" Margin="0,5.5,5.5,0" Opacity="0" Stretch="Fill" VerticalAlignment="Top" Width="15"/>
