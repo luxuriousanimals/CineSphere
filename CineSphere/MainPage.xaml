@@ -80,11 +80,11 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             >
-            <GridView.ItemsPanel>
+            <!--<GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VariableSizedWrapGrid ItemHeight="200" ItemWidth="200" MaximumRowsOrColumns="6" Orientation="Vertical"/>
                 </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
+            </GridView.ItemsPanel>-->
             <!--<GridView.GroupStyle>
                 <GroupStyle HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>

@@ -229,7 +229,7 @@ namespace CineSphere
 
             foreach (StorageFile file in results)
             {
-                Debug.WriteLine(file);
+
                 StorageApplicationPermissions.FutureAccessList.AddOrReplace(file.Name, file);
                 await ProcessFileSelection(file);
 

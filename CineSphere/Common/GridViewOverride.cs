@@ -25,18 +25,18 @@ namespace CineSphere.Common
             
             if (obj.isMRU)
             {
-                obj.Size = 420;
-                gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle2"] as Style;
-                gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 3);
-                gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 3);
+                obj.Size = 140;
+                gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle1"] as Style;
+                //gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
+                //gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
                // gi.Template = (DataTemplate)Application.Current.Resources["IconGridDataTemplate"] as DataTemplate;
             }
             else {
 
                 obj.Size = 140;
                 gi.Style = Application.Current.Resources["CineSphereGridViewItemStyle1"] as Style;
-                gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
-                gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
+                //gi.SetValue(VariableSizedWrapGrid.ColumnSpanProperty, 1);
+                //gi.SetValue(VariableSizedWrapGrid.RowSpanProperty, 1);
             }
 
             base.PrepareContainerForItemOverride(gi, item);

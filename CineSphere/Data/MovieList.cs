@@ -27,27 +27,38 @@ namespace CineSphere.Data
             private static readonly string _dbPath = App.DBPath;
 
 
-            public void Add(Video studyActivity)
+            public void Add(Video video)
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
-                    connection.Insert(studyActivity);
+                    var exisitngItem = (connection.Table<Video>().Where(
+               v => v.Path == video.Path)).SingleOrDefault();
+
+                    if (exisitngItem == null)
+                    {
+                        connection.Insert(video);
+                    }
+                    else {
+                        //update logic  
+                    }
+
+                   
                 }
             }
 
-            public void Remove(Video studyActivity)
+            public void Remove(Video video)
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
-                    connection.Delete(studyActivity);
+                    connection.Delete(video);
                 }
             }
 
-            public void Update(Video studyActivity)
+            public void Update(Video video)
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
-                    connection.Update(studyActivity);
+                    connection.Update(video);
                 }
             }
 
