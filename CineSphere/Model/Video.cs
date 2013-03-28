@@ -19,5 +19,7 @@ namespace CineSphere.Model
         public string Img { get; set; }
         public string Path { get; set; }
         public string Meta { get; set; }
+        public bool rememberFullscreen { get; set; }
+        public int LastPosition { get; set; }
     }
 }

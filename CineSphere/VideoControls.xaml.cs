@@ -73,14 +73,16 @@ namespace CineSphere
         private MineColorHelper MyColors = MainPage.Current.MyColors;
         private ProgressHelper MyProgressHelper;
         public Grid RefHolder;
+        public Grid RefMaster; 
 
         public VideoControls()
         {
-
-
+           
             this.InitializeComponent();
+
             Current = this;
             RefHolder = Holder;
+            RefMaster = videoControllerGrid;
 
             MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
             MyColors.ProgressFrameFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
@@ -856,13 +858,27 @@ namespace CineSphere
         private void showControls(object sender, PointerRoutedEventArgs e)
         {
 
-            PointerPoint unpoint = e.GetCurrentPoint(PlayBackHolder);
+            PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
+            Debug.WriteLine(unpoint.Position.X);
+            Debug.WriteLine(Window.Current.Bounds.Right - videoControllerGrid.Width / 2);
+            double xPos =
+                (unpoint.Position.X - videoControllerGrid.Width / 2 < Window.Current.Bounds.Left + videoControllerGrid.Width / 2) ?
+                  Window.Current.Bounds.Left :
+                       ((unpoint.Position.X > Window.Current.Bounds.Right - videoControllerGrid.Width / 2) ?
+                     Window.Current.Bounds.Right - videoControllerGrid.Width :
+                     unpoint.Position.X - videoControllerGrid.Width / 2);
+
+            double yPos =
+               (unpoint.Position.Y - videoControllerGrid.Height / 2 < Window.Current.Bounds.Top + videoControllerGrid.Height / 2) ?
+                 Window.Current.Bounds.Top :
+                      ((unpoint.Position.Y > Window.Current.Bounds.Bottom - videoControllerGrid.Height / 2) ?
+                    Window.Current.Bounds.Bottom - videoControllerGrid.Height :
+                    unpoint.Position.Y - videoControllerGrid.Height / 2);
+
 
             if (!isVisible)
             {
-                TranslateTransform PositionOfControls = new TranslateTransform();
-                PositionOfControls.X = unpoint.Position.X - 181;
-                PositionOfControls.Y = unpoint.Position.Y - 181;
+                videoControllerGrid.Margin = new Thickness(xPos, yPos, 0, 0);
 
                 VisualStateManager.GoToState(this, "showController", true);
 
@@ -974,17 +990,14 @@ namespace CineSphere
         private void ReGet_Pixel(object sender, PointerRoutedEventArgs e)
         {
             PointerPoint unpoint = e.GetCurrentPoint(ColorPickerHolder);
-
+           
             var ttv = ColorPickerHolder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
 
             if (_isSelectingColor)
             {
 
-                Debug.WriteLine("x " + ((int)screenCoords.X + (int)unpoint.Position.X));
-
-                Debug.WriteLine("y " + ((int)screenCoords.Y + (int)unpoint.Position.Y));
-
+              
                 Color newColor = Win32.GetPixelColor((int)screenCoords.X + (int)unpoint.Position.X, (int)screenCoords.Y + (int)unpoint.Position.Y);
                 HandleColorChange(newColor);
 

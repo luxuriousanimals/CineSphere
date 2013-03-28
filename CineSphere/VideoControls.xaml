@@ -11,7 +11,7 @@
     mc:Ignorable="d">
 
    
-    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Visible">
+    <Grid Width="360" Height="360" Name="videoControllerGrid" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="2" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left">
 
 
         <Grid Name="Holder"  Width="360" Height="360">
@@ -107,7 +107,7 @@
 
                     <!--<Image Source="Assets/colorPicker.png" Width="52" Height="52"/>-->
                 </Button>
-                <Border Background="Transparent" CornerRadius="10" Width="100" Height="40" Margin="0,0,0,40" VerticalAlignment="Bottom" HorizontalAlignment="Center" Canvas.ZIndex="6">
+                <Border Background="Black" CornerRadius="10" Width="100" Height="40" Margin="0,0,0,40" VerticalAlignment="Bottom" HorizontalAlignment="Center" Canvas.ZIndex="6">
                     <TextBlock Foreground="White" Style="{StaticResource TitleTextStyle}" Height="40" Margin="1,5,0,0" HorizontalAlignment="Center" Name="DisplayTime" >
 
                     </TextBlock>
@@ -133,6 +133,16 @@
 
             <VisualStateGroup x:Name="ApplicationViewStates">
                 <VisualState x:Name="EnterStoryboard">
+                	<Storyboard>
+                		<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="videoControllerGrid">
+                			<DiscreteObjectKeyFrame KeyTime="0">
+                				<DiscreteObjectKeyFrame.Value>
+                					<Visibility>Collapsed</Visibility>
+                				</DiscreteObjectKeyFrame.Value>
+                			</DiscreteObjectKeyFrame>
+                		</ObjectAnimationUsingKeyFrames>
+                		<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="videoControllerGrid" d:IsOptimized="True"/>
+                	</Storyboard>
                 </VisualState>
                 
                 <VisualState x:Name="FullScreenLandscape"/>
@@ -150,8 +160,11 @@
                 </VisualState>
                 <VisualState x:Name="showController">
                         <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Opacity">
+                            <DiscreteObjectKeyFrame KeyTime="1" Value="1"/>
+                        </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            	<DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
                             </ObjectAnimationUsingKeyFrames>
 
                         </Storyboard>
@@ -160,7 +173,11 @@
                 <VisualState x:Name="hideController">
                         <Storyboard>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                            	<DiscreteObjectKeyFrame KeyTime="0">
+                            		<DiscreteObjectKeyFrame.Value>
+                            			<Visibility>Collapsed</Visibility>
+                            		</DiscreteObjectKeyFrame.Value>
+                            	</DiscreteObjectKeyFrame>
                             </ObjectAnimationUsingKeyFrames>
 
                     </Storyboard>

@@ -37,7 +37,6 @@ namespace CineSphere.Data
 
                     if (existingItem == null)
                     {
-                        Debug.WriteLine("inserts");
                         connection.Insert(video);
                     }
                     else {
@@ -60,6 +59,7 @@ namespace CineSphere.Data
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
+                    
                     connection.Update(video);
                 }
             }
@@ -81,10 +81,11 @@ namespace CineSphere.Data
                                         Title = _video.Title,
                                         Subtitle = _video.Subtitle,
                                         Img = pathToImage(_video.Img),
-                                        Path = _video.Path
+                                        Path = _video.Path,
+                                        LastPosition = _video.LastPosition,
+                                        rememberFullscreen = _video.rememberFullscreen
 
                                     };
-                                    Debug.WriteLine("added");
                                     list.Add(videes);
                                 }
                             } else {
@@ -97,7 +98,9 @@ namespace CineSphere.Data
                                         Subtitle = _video.Subtitle,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,
-                                        isMRU = true
+                                        isMRU = true,
+                                        LastPosition = _video.LastPosition,
+                                        rememberFullscreen = _video.rememberFullscreen
                                     };
                                     list.Add(videes);
                                 }
@@ -111,7 +114,9 @@ namespace CineSphere.Data
                                         Title = _video.Title,
                                         Subtitle = _video.Subtitle,
                                         Img = pathToImage(_video.Img),
-                                        Path = _video.Path
+                                        Path = _video.Path,
+                                        LastPosition = _video.LastPosition,
+                                        rememberFullscreen = _video.rememberFullscreen
 
                                     };
                                     list.Add(videes);

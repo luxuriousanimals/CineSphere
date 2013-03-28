@@ -171,6 +171,36 @@ namespace CineSphere.ViewModels
             }
         }
 
+        private int _lastPosition = 0;
+        public int LastPosition
+        {
+            get
+            {
+                return _lastPosition;
+            }
+
+            set
+            {
+                _lastPosition = value;
+                RaisePropertyChanged("LastPosition");
+            }
+        }
+
+        private bool _rememberFullscreen ;
+        public bool rememberFullscreen
+        {
+            get
+            {
+                return _rememberFullscreen;
+            }
+
+            set
+            {
+                _rememberFullscreen = value;
+                RaisePropertyChanged("rememberFullscreen");
+            }
+        }
+
         #endregion "Properties"
 
         //public VideoViewModel GetVideo(int videoId)
