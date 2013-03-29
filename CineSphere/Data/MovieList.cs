@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using CineSphere;
 using CineSphere.Common;
-using CineSphere.ViewModels;
 using CineSphere.Model;
 using Windows.Storage.Streams;
 using Windows.Storage.Pickers;
@@ -19,6 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.IO;
 
 using System.Diagnostics;
+using Windows.Storage;
 
 namespace CineSphere.Data
 {
@@ -47,11 +47,26 @@ namespace CineSphere.Data
                 }
             }
 
-            public void Remove(Video video)
+            public async void Remove(Video video)
             {
+                string result; 
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
-                    connection.Delete(video);
+
+                    var existingProject = (connection.Table<Video>().Where(
+                  v => v.Path == video.Path)).Single();
+
+                    if (connection.Delete(existingProject) > 0)
+                    {
+                        result = "Success";
+
+                       
+                    }
+                    else
+                    {
+                        result = "This project was not removed";
+                    }
+
                 }
             }
 
@@ -64,9 +79,9 @@ namespace CineSphere.Data
                 }
             }
 
-            public ObservableCollection<VideoViewModel> GetAll(string e = null)
+            public ObservableCollection<Video> GetAll(string e = null)
             {
-                var list = new ObservableCollection<VideoViewModel>();
+                var list = new ObservableCollection<Video>();
                         using (var db = new SQLiteConnection(_dbPath))
                         {
 
@@ -76,10 +91,9 @@ namespace CineSphere.Data
                                 var query = db.Table<Video>().OrderBy(v => v.Id);
                                 foreach (var _video in query)
                                 {
-                                    var videes = new VideoViewModel()
+                                    var videes = new Video()
                                     {
                                         Title = _video.Title,
-                                        Subtitle = _video.Subtitle,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,
                                         LastPosition = _video.LastPosition,
@@ -92,13 +106,11 @@ namespace CineSphere.Data
                                 var query = db.Table<Video>().Where(v => v.Path == e);
                                 foreach (var _video in query)
                                 {
-                                    var videes = new VideoViewModel()
+                                    var videes = new Video()
                                     {
                                         Title = _video.Title,
-                                        Subtitle = _video.Subtitle,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,
-                                        isMRU = true,
                                         LastPosition = _video.LastPosition,
                                         rememberFullscreen = _video.rememberFullscreen
                                     };
@@ -109,10 +121,9 @@ namespace CineSphere.Data
                                 var rest = db.Table<Video>().Where(v => v.Path != e);
                                 foreach (var _video in rest)
                                 {
-                                    var videes = new VideoViewModel()
+                                    var videes = new Video()
                                     {
                                         Title = _video.Title,
-                                        Subtitle = _video.Subtitle,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,
                                         LastPosition = _video.LastPosition,

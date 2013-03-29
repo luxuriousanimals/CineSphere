@@ -1,7 +1,6 @@
 ﻿using CineSphere.Common;
 using CineSphere.Data;
 using CineSphere.Model;
-using CineSphere.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +43,8 @@ namespace CineSphere
         public MediaElement vidPlayer;
         public MineColorHelper MyColors = new MineColorHelper();
         private PointerEventHandler pointerpressedMainGrid;
+        private int selectedItems = 0;
+
 
         public bool IsFullscreen { set; get; }
 
@@ -65,11 +66,6 @@ namespace CineSphere
             this.InitializeComponent();
             _movieList = new MovieList();
             itemGridView.ItemsSource = null;
-        }
-
-
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
-        {
             Current = this;
             vidView = this.videoView;
             vidPlayer = this.videoPlayer;
@@ -78,23 +74,29 @@ namespace CineSphere
 
             //video = new VideosViewModel();
             //videosGrid = video.GetVideos();
-            await SetCollectionViewSource();
-
-            base.OnNavigatedTo(e);
-            itemGridView.ItemClick += itemGridView_ItemClick;
+           
 
             //Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Cross, 0);
             //  itemGridView.PointerEntered += HoverOn;
 
 
             controls = new VideoControls();
-
+            controls.RefMaster.Visibility = Visibility.Collapsed;
 
 
             tintView.DataContext = MyColors;
 
             MainGrid.Children.Add(controls);
             Grid.SetRowSpan(controls, 2);
+        }
+
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            await SetCollectionViewSource();
+
+            base.OnNavigatedTo(e);
+            itemGridView.ItemClick += itemGridView_ItemClick;
             // Current.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x77, 0x77, 0x77));
 
         }
@@ -135,7 +137,7 @@ namespace CineSphere
 
             }
 
-            itemGridView.ItemsSource = videoList.Source;
+            //ditemGridView.ItemsSource = videoList.Source;
 
         }
 
@@ -165,7 +167,7 @@ namespace CineSphere
 
 
 
-        public async Task PickFileAsync(bool multiplieFiles)
+        public async Task PickFileAsync(bool multipleFiles)
         {
 
             FileOpenPicker filePicker = new FileOpenPicker();
@@ -175,7 +177,7 @@ namespace CineSphere
             filePicker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
 
 
-            if (multiplieFiles)
+            if (multipleFiles)
             {
                 var files = await filePicker.PickMultipleFilesAsync();
                 ShowProgressBar.Visibility = Visibility.Visible;
@@ -244,7 +246,7 @@ namespace CineSphere
         {
             var tn = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
             string x = await SaveImageLocal(tn, file.Name);
-            _movieList.Add(new Video { Title = file.Name, Subtitle = file.FileType, Img = x, Path = file.Path });
+            _movieList.Add(new Video { Title = file.Name, Img = x, Path = file.Path });
 
         }
 
@@ -297,7 +299,8 @@ namespace CineSphere
             if (controls.IsFullscreen) controls.FullscreenToggle();
 
             
-            switchViews("Library");
+//            switchViews("Library");
+            this.Frame.Navigate(typeof(MainPage));
 
         }
 
@@ -338,7 +341,7 @@ namespace CineSphere
 
         public async void itemGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var item = ((VideoViewModel)e.ClickedItem);
+            var item = ((Video)e.ClickedItem);
 
             //if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile")) {
             //    var prevFile = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
@@ -356,7 +359,7 @@ namespace CineSphere
 
         }
 
-        private async Task SetMediaElementSourceAsync(VideoViewModel file)
+        private async Task SetMediaElementSourceAsync(Video file)
         {
 
             StorageFile video = await Windows.Storage.StorageFile.GetFileFromPathAsync(file.Path);
@@ -374,6 +377,9 @@ namespace CineSphere
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
         {
+            
+            
+            
             Debug.WriteLine(Window.Current.Bounds.Width / 2);
             
             controls.RefMaster.Margin = new Thickness(Window.Current.Bounds.Width/2 - controls.RefMaster.Width/2, Window.Current.Bounds.Height/2 - controls.RefMaster.Height/2, 0,0);
@@ -403,9 +409,40 @@ namespace CineSphere
          
         }
 
-        private void RemoveFile(object sender, RoutedEventArgs e)
+        private async void RemoveFile(object sender, RoutedEventArgs e)
         {
+             //string result = customer.DeleteCustomer(customer.Id);
+           
+         foreach(Video item in itemGridView.SelectedItems) {
 
+             _movieList.Remove(item);
+             await SetCollectionViewSource();
+             //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(item.Img));
+             //await file.DeleteAsync();
+         }
+
+
+
+        }
+
+
+        private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count() == 1) selectedItems++;
+            if (e.RemovedItems.Count() == 1) selectedItems--;
+
+            if (selectedItems == 0) {
+                RemoveFileAppBarButton.Visibility = Visibility.Collapsed;
+            }
+            else {
+                RemoveFileAppBarButton.Visibility = Visibility.Visible;
+            }
+
+        }
+
+        private void HandleOpenEvent(object sender, object e)
+        {
+            VisualStateManager.GoToState(controls, "hideController", true);
         }
 
 

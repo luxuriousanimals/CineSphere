@@ -1,4 +1,4 @@
-﻿using CineSphere.ViewModels;
+﻿using CineSphere.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +21,7 @@ namespace CineSphere.Common
         {
 
         
-            var obj = item as VideoViewModel;
+            var obj = item as Video;
             var gi = element as GridViewItem;
 
 

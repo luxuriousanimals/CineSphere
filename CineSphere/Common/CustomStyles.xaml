@@ -230,7 +230,6 @@
                             <VisualStateGroup x:Name="FocusStates">
                                 <VisualState x:Name="Focused">
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="FocusVisual"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unfocused"/>
@@ -416,7 +415,6 @@
                                         </Grid>
                                     </Border>
                                     <Ellipse x:Name="PointerOverBorder" StrokeThickness="8" Margin="4" Stroke="{Binding StrokeColorC,Source={StaticResource MineColorHelper}}" Opacity="0" Width="140" Height="140" VerticalAlignment="Top" DataContext="{StaticResource MineColorHelper}"   />
-                                    <Ellipse x:Name="FocusVisual" Opacity="0" Margin="4" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="8" Width="140" Height="140" VerticalAlignment="Top"/>
                                     <Ellipse x:Name="SelectedBorder"  Margin="4" Width="140" Height="140" IsHitTestVisible="False" Opacity="0" Stroke="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" StrokeThickness="10" VerticalAlignment="Top" />
                                     
                                     <TextBlock x:Name="MultiArrangeOverlayText" Foreground="{StaticResource ListViewItemDragForegroundThemeBrush}" FontSize="26.667" FontFamily="{StaticResource ContentControlThemeFontFamily}" IsHitTestVisible="False" Margin="18,9,0,0" Opacity="0" TextWrapping="Wrap" Text="{Binding TemplateSettings.DragItemsCount, RelativeSource={RelativeSource Mode=TemplatedParent}}" TextTrimming="WordEllipsis"/>

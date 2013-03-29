@@ -393,7 +393,6 @@ namespace CineSphere
 
         void Progress_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            Debug.WriteLine("click capture");
 
             videoPlayer.DefaultPlaybackRate = 0.0;
 
@@ -422,6 +421,7 @@ namespace CineSphere
                 videoPlayer.DefaultPlaybackRate = 1.0;
                 videoPlayer.PlaybackRate = 1.0;
                 videoPlayer.Play();
+                Debug.WriteLine("PROG");
                 _resetTimer();
             }
         }
@@ -471,7 +471,8 @@ namespace CineSphere
                 if (ProgressPosition >= ProgressMax) ProgressPosition = ProgressMax;
                 if (ProgressPosition <= ProgressMin) ProgressPosition = ProgressMin;
             }
-            else {
+            else if(_progressHasInteraction) {
+                Debug.WriteLine("is this 9");
                 _resetTimer();
             }
             ProgressSlider.Data = this.Sector((Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2), (Canvas.GetTop(ControlBackground) + ControlBackground.Height / 2), Diameter, ProgressPosition, ProgressMax);
@@ -661,7 +662,6 @@ namespace CineSphere
         private void RewindButton_Click(object sender, RoutedEventArgs e)
         {
 
-            Debug.WriteLine("yes");
             videoPlayer.DefaultPlaybackRate = 0.0;
             videoPlayer.PlaybackRate = -4.0;
             _controlsStopTimer();
@@ -803,8 +803,13 @@ namespace CineSphere
 
         private void volume_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
         {
-            _volumeTouchedDown = false;
-            _resetTimer();
+            if (_volumeTouchedDown)
+            {
+                _resetTimer();
+
+                _volumeTouchedDown = false;
+            }
+
         }
 
         void volume_dragged(object sender, PointerRoutedEventArgs e)
@@ -830,9 +835,11 @@ namespace CineSphere
      
         private void hideControls()
         {
-
-            VisualStateManager.GoToState(this, "hideController", true);
-            isVisible = false;
+            if (isVisible)
+            {
+                VisualStateManager.GoToState(this, "hideController", true);
+            }
+             isVisible = false;
             //videoControllerGrid.Visibility = Visibility.Collapsed;
            
         }
@@ -859,8 +866,9 @@ namespace CineSphere
         {
 
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
-            Debug.WriteLine(unpoint.Position.X);
-            Debug.WriteLine(Window.Current.Bounds.Right - videoControllerGrid.Width / 2);
+
+            if (unpoint.Properties.IsRightButtonPressed) return;
+            
             double xPos =
                 (unpoint.Position.X - videoControllerGrid.Width / 2 < Window.Current.Bounds.Left + videoControllerGrid.Width / 2) ?
                   Window.Current.Bounds.Left :
@@ -872,7 +880,7 @@ namespace CineSphere
                (unpoint.Position.Y < Window.Current.Bounds.Top + videoControllerGrid.Height/2) ?
                  Window.Current.Bounds.Top :
                       ((unpoint.Position.Y > Window.Current.Bounds.Bottom - videoControllerGrid.Height) ?
-                    Window.Current.Bounds.Bottom - videoControllerGrid.Height :
+                    Window.Current.Bounds.Bottom - videoControllerGrid.Height - 30:
                     unpoint.Position.Y - videoControllerGrid.Height / 2);
 
             if (unpoint.Position.Y < 60 && unpoint.Position.Y < 60) return;
@@ -925,6 +933,7 @@ namespace CineSphere
 
         private void _resetTimerHandler(object sender, PointerRoutedEventArgs e)
         {
+
             _controlsTimer.Stop();
             timesTicked = 1;
             _controlsTimer.Tick -= _controlsTimer_Tick;
@@ -939,8 +948,16 @@ namespace CineSphere
             if (timesTicked > timesToTick)
             {
                 _controlsStopTimer();
-                VisualStateManager.GoToState(this, "hideController", true);
+                if (ColorPickerHolder.Visibility.ToString() == "Visible")
+                {
+                    VisualStateManager.GoToState(this, "resetColorPicker", true);
 
+                }
+                else
+                {
+
+                    VisualStateManager.GoToState(this, "hideController", true);
+                }
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
                 pointerpressedstage = new PointerEventHandler(showControls);
                 MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
@@ -956,6 +973,9 @@ namespace CineSphere
             _isSelectingColor = true;
             PointerPoint unpoint = e.GetCurrentPoint(ColorPickerHolder);
 
+            double D = Math.Sqrt(Math.Pow(_CenterX - unpoint.Position.X, 2) + Math.Pow(_CenterY - unpoint.Position.Y, 2));
+            if (D <= Diameter/5) return;
+            
             var ttv = ColorPickerHolder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
 
@@ -995,6 +1015,9 @@ namespace CineSphere
            
             var ttv = ColorPickerHolder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
+
+            double D = Math.Sqrt(Math.Pow(_CenterX - unpoint.Position.X, 2) + Math.Pow(_CenterY - unpoint.Position.Y, 2));
+            if (D <= Diameter / 5) return;
 
             if (_isSelectingColor)
             {

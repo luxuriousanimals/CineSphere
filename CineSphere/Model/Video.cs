@@ -7,19 +7,98 @@ namespace CineSphere.Model
 {
 
 
-    public class Video
+    public class Video : System.ComponentModel.INotifyPropertyChanged
     {
-        public MineColorHelper MyColors = new MineColorHelper();
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
 
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Subtitle { get; set; }
-        public string Img { get; set; }
-        public string Path { get; set; }
-        public string Meta { get; set; }
-        public bool rememberFullscreen { get; set; }
-        public int LastPosition { get; set; }
+
+
+        private string _title = string.Empty;
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value; OnPropertyChanged("Title");
+                }
+            }
+        }
+
+        private string _img = string.Empty;
+        public string Img
+        {
+            get { return _img; }
+            set
+            {
+                if (_img != value)
+                {
+                    _img = value; OnPropertyChanged("Img");
+                }
+            }
+        }
+        private string _path = string.Empty;
+        public string Path
+        {
+            get { return _path; }
+            set
+            {
+                  if (_path != value)
+                {
+                    _path = value; OnPropertyChanged("Path");
+                }
+            }
+        }
+        private bool _rememberFullscreen;
+        public bool rememberFullscreen
+        {
+            get { return _rememberFullscreen; }
+            set
+            {
+                if (_rememberFullscreen != value)
+                {
+                    _rememberFullscreen = value; OnPropertyChanged("rememberFullscreen");
+                }
+            }
+        }
+        private int _lastPosition = 0;
+        public int LastPosition
+        {
+            get { return _lastPosition; }
+            set
+            {
+                if (_lastPosition != value)
+                {
+                    _lastPosition = value; OnPropertyChanged("LastPosition");
+                }
+            }
+        }
+        private int _size = 140;
+        public int Size
+        {
+            get { return this._size; }
+            set
+            {
+                if (_size != value)
+                {
+                    _size = value; OnPropertyChanged("Size");
+                }
+            }
+        }
+
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+
     }
 }
