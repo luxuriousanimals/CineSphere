@@ -415,6 +415,7 @@ namespace CineSphere
                 videoPlayer.DefaultPlaybackRate = 1.0;
                 videoPlayer.PlaybackRate = 1.0;
                 videoPlayer.Play();
+                Debug.WriteLine("lost");
                 _resetTimer();
             }
         }
@@ -800,6 +801,7 @@ namespace CineSphere
         {
             if (_volumeTouchedDown)
             {
+                Debug.WriteLine("lost 2");
                 _resetTimer();
 
                 _volumeTouchedDown = false;
@@ -849,7 +851,7 @@ namespace CineSphere
 
             var ttv = Holder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
-            Debug.WriteLine(!(unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && !(unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y));
+
             if ((unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
             { }
             else {
@@ -982,8 +984,6 @@ namespace CineSphere
             if (_isSelectingColor)
             {
 
-                Debug.WriteLine((int)screenCoords.X + (int)unpoint.Position.X);
-                Debug.WriteLine((int)screenCoords.Y + (int)unpoint.Position.Y);
 
                 Color newColor = Win32.GetPixelColor((int)screenCoords.X + (int)unpoint.Position.X, (int)screenCoords.Y + (int)unpoint.Position.Y);
 
@@ -996,16 +996,17 @@ namespace CineSphere
 
         private void PointerUp(object sender, PointerRoutedEventArgs e)
         {
-            _isSelectingColor = false;
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 
             if (MainPage.Current.vidView.Visibility.ToString() == "Collapsed")
             {
                 VisualStateManager.GoToState(this, "resetColorPicker", true);
             }
-            else {
+            else if(_isSelectingColor) {
+                Debug.WriteLine("gah");
                 VisualStateManager.GoToState(this, "hideColorPicker", true);
             }
+            _isSelectingColor = false;
 
         }
 

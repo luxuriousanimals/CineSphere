@@ -326,6 +326,7 @@ namespace CineSphere
                     break;
 
                 case "colorPickerClose":
+                    Debug.WriteLine("thism");
                     VisualStateManager.GoToState(controls, "resetColorPicker", true);
 
                     break;
