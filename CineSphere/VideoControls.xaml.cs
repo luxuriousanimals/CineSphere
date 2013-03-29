@@ -415,7 +415,7 @@ namespace CineSphere
                 videoPlayer.DefaultPlaybackRate = 1.0;
                 videoPlayer.PlaybackRate = 1.0;
                 videoPlayer.Play();
-                Debug.WriteLine("lost");
+
                 _resetTimer();
             }
         }
@@ -467,7 +467,7 @@ namespace CineSphere
                 if (ProgressPosition <= ProgressMin) ProgressPosition = ProgressMin;
             }
             else if(_progressHasInteraction) {
-                Debug.WriteLine("is this 9");
+
                 _resetTimer();
             }
             ProgressSlider.Data = this.Sector((Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2), (Canvas.GetTop(ControlBackground) + ControlBackground.Height / 2), Diameter, ProgressPosition, ProgressMax);
@@ -835,6 +835,8 @@ namespace CineSphere
         {
             if (isVisible)
             {
+                Debug.WriteLine("thism2");
+
                 VisualStateManager.GoToState(this, "hideController", true);
             }
              isVisible = false;
@@ -1003,7 +1005,7 @@ namespace CineSphere
                 VisualStateManager.GoToState(this, "resetColorPicker", true);
             }
             else if(_isSelectingColor) {
-                Debug.WriteLine("gah");
+         
                 VisualStateManager.GoToState(this, "hideColorPicker", true);
             }
             _isSelectingColor = false;

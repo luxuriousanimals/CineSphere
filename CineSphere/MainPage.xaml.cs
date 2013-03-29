@@ -326,7 +326,7 @@ namespace CineSphere
                     break;
 
                 case "colorPickerClose":
-                    Debug.WriteLine("thism");
+                    Debug.WriteLine("thism6");
                     VisualStateManager.GoToState(controls, "resetColorPicker", true);
 
                     break;
@@ -439,6 +439,7 @@ namespace CineSphere
 
         private void HandleOpenEvent(object sender, object e)
         {
+            if (controls.RefMaster.Visibility.ToString() == "Collapsed")   return;
             VisualStateManager.GoToState(controls, "hideController", true);
         }
 
