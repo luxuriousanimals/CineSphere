@@ -74,8 +74,12 @@ namespace CineSphere.Data
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
+
+                    //Debug.WriteLine(video);
+                    //Debug.WriteLine("beta");
                     
                     connection.Update(video);
+
                 }
             }
 

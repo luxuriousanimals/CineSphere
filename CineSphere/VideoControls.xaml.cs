@@ -220,15 +220,12 @@ namespace CineSphere
 
             ProgressDotTransformGroup.Children.Add(ProgressDotInitTrans);
             ProgressDotTransformGroup.Children.Add(ProgressDotRot);
-
             ProgressDotTransformGroup.Children.Add(ProgressDotTrans);
-
             ProgressDot.RenderTransform = ProgressDotTransformGroup;            
             
             ProgressSlider = new Windows.UI.Xaml.Shapes.Path();
             ProgressSlider.Data = this.Sector(_CenterX, _CenterY, Diameter - 2, ProgressPosition, ProgressMax);
             ProgressSlider.Fill = new SolidColorBrush(Color.FromArgb(168, 255, 255, 255));
-            //ProgressSlider.SetBinding(Shape.FillProperty, BindingBGB);
             Canvas.SetZIndex(ProgressSlider, 1);
 
             ProgressSliderFrame = new Windows.UI.Xaml.Shapes.Path();
@@ -238,9 +235,6 @@ namespace CineSphere
 
             PlayBackHolder.Children.Add(ProgressSliderFrame);
             PlayBackHolder.Children.Add(ProgressSlider);
-           // PlayBackHolder.Children.Add(ProgressDot);
-            
-
 
             Binding posBinding = new Binding();
             posBinding.Path = new PropertyPath("VideoPosition");
@@ -249,7 +243,6 @@ namespace CineSphere
             posBinding.Converter = new PositionConverter();
 
             DisplayTime.SetBinding(TextBlock.TextProperty, posBinding);
-
 
             PointerEventHandler pointerpressedhandler = new PointerEventHandler(Progress_PointerEntered);
             ProgressSliderFrame.AddHandler(Control.PointerPressedEvent, pointerpressedhandler, true);
@@ -397,6 +390,7 @@ namespace CineSphere
             videoPlayer.DefaultPlaybackRate = 0.0;
 
             PointerPoint unpoint = e.GetCurrentPoint(PlayBackHolder);
+            if (unpoint.Properties.IsRightButtonPressed) return;
 
             double newPoint = Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 >= 0 ?
                               Math.Max(Math.Min(Math.Floor(Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 - 90), ProgressMax), ProgressMin) :
@@ -421,7 +415,6 @@ namespace CineSphere
                 videoPlayer.DefaultPlaybackRate = 1.0;
                 videoPlayer.PlaybackRate = 1.0;
                 videoPlayer.Play();
-                Debug.WriteLine("PROG");
                 _resetTimer();
             }
         }
@@ -435,6 +428,7 @@ namespace CineSphere
 
 
                 PointerPoint unpoint = e.GetCurrentPoint(PlayBackHolder);
+                if (unpoint.Properties.IsRightButtonPressed) return;
 
                 double newPoint = Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 >= 0 ?
                                   Math.Max(Math.Min(Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 - 90, ProgressMax), ProgressMin) :
@@ -790,6 +784,7 @@ namespace CineSphere
         private void volume_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             PointerPoint unpoint = e.GetCurrentPoint(VolumeControlHolder);
+            if (unpoint.Properties.IsRightButtonPressed) return;
 
             double newVolumePosition = Math.Max(Math.Min(Math.Floor(VolumeMax - unpoint.Position.Y), VolumeMax), VolumeMin);
 
@@ -817,6 +812,7 @@ namespace CineSphere
             if (_volumeTouchedDown)
             {
                 PointerPoint unpoint = e.GetCurrentPoint(VolumeControlHolder);
+                if (unpoint.Properties.IsRightButtonPressed) return;
 
                 double newVolumePosition = Math.Max(Math.Min(Math.Floor(VolumeMax - unpoint.Position.Y), VolumeMax), VolumeMin);
 
@@ -848,6 +844,9 @@ namespace CineSphere
         {
 
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
+
+            if (unpoint.Properties.IsRightButtonPressed) return;
+
             var ttv = Holder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
             Debug.WriteLine(!(unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && !(unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y));
@@ -972,6 +971,7 @@ namespace CineSphere
 
             _isSelectingColor = true;
             PointerPoint unpoint = e.GetCurrentPoint(ColorPickerHolder);
+            if (unpoint.Properties.IsRightButtonPressed) return;
 
             double D = Math.Sqrt(Math.Pow(_CenterX - unpoint.Position.X, 2) + Math.Pow(_CenterY - unpoint.Position.Y, 2));
             if (D <= Diameter/5) return;
@@ -1012,7 +1012,8 @@ namespace CineSphere
         private void ReGet_Pixel(object sender, PointerRoutedEventArgs e)
         {
             PointerPoint unpoint = e.GetCurrentPoint(ColorPickerHolder);
-           
+            if (unpoint.Properties.IsRightButtonPressed) return;
+
             var ttv = ColorPickerHolder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
 

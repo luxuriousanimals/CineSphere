@@ -166,7 +166,7 @@
         						</DiscreteObjectKeyFrame.Value>
         					</DiscreteObjectKeyFrame>
         				</ObjectAnimationUsingKeyFrames>
-        				<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="videoControllerGrid" d:IsOptimized="True"/>
+        				<DoubleAnimation Duration="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="videoControllerGrid" d:IsOptimized="True" To="0"/>
         			</Storyboard>
         		</VisualState>
                 
@@ -485,7 +485,7 @@
         							<Visibility>Visible</Visibility>
         						</DiscreteObjectKeyFrame.Value>
         					</DiscreteObjectKeyFrame>
-        					<DiscreteObjectKeyFrame KeyTime="0:0:0.4">
+        					<DiscreteObjectKeyFrame KeyTime="0:0:1.8">
         						<DiscreteObjectKeyFrame.Value>
         							<Visibility>Collapsed</Visibility>
         						</DiscreteObjectKeyFrame.Value>
@@ -493,8 +493,8 @@
         				</ObjectAnimationUsingKeyFrames>
         				<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="videoControllerGrid">
         					<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-        					<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
-        					<EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
+        					<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0"/>
+        					<EasingDoubleKeyFrame KeyTime="0:0:1.8" Value="0"/>
         				</DoubleAnimationUsingKeyFrames>
 
         			</Storyboard>

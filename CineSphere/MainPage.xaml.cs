@@ -72,14 +72,6 @@ namespace CineSphere
             mainGrid = this.MainGrid;
             tintView = this.TintView;
 
-            //video = new VideosViewModel();
-            //videosGrid = video.GetVideos();
-           
-
-            //Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Cross, 0);
-            //  itemGridView.PointerEntered += HoverOn;
-
-
             controls = new VideoControls();
             controls.RefMaster.Visibility = Visibility.Collapsed;
 
@@ -296,11 +288,13 @@ namespace CineSphere
                 _movieList.Update(new Video { Title = prevFile.Name, Path = prevFile.Path, rememberFullscreen = controls.IsFullscreen, LastPosition=(int)vidPlayer.Position.TotalMilliseconds  });
 
             }
+            Debug.WriteLine(controls.IsFullscreen);
+            Debug.WriteLine((int)vidPlayer.Position.TotalMilliseconds);
             if (controls.IsFullscreen) controls.FullscreenToggle();
 
-            
-//            switchViews("Library");
-            this.Frame.Navigate(typeof(MainPage));
+            await SetCollectionViewSource();            
+            switchViews("Library");
+           // this.Frame.Navigate(typeof(MainPage));
 
         }
 
@@ -366,7 +360,7 @@ namespace CineSphere
             var stream = await video.OpenAsync(Windows.Storage.FileAccessMode.Read);
             MediaControl.TrackName = video.DisplayName;
             videoPlayer.SetSource(stream, video.ContentType);
-            if (file.LastPosition != 0) Debug.WriteLine(file.LastPosition);
+            if (file.LastPosition != 0) Debug.WriteLine((int)file.LastPosition);
             if (file.rememberFullscreen) controls.FullscreenToggle();
             videoPlayer.Play();
 
@@ -380,8 +374,7 @@ namespace CineSphere
             
             
             
-            Debug.WriteLine(Window.Current.Bounds.Width / 2);
-            
+         
             controls.RefMaster.Margin = new Thickness(Window.Current.Bounds.Width/2 - controls.RefMaster.Width/2, Window.Current.Bounds.Height/2 - controls.RefMaster.Height/2, 0,0);
 
             switchViews("colorPicker");
@@ -395,6 +388,9 @@ namespace CineSphere
         {
             
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
+
+            if (unpoint.Properties.IsRightButtonPressed) return;
+
             var ttv = controls.RefHolder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
             if ((unpoint.Position.X <= screenCoords.X + controls.RefHolder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + controls.RefHolder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
