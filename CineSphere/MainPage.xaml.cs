@@ -260,9 +260,9 @@ namespace CineSphere
                 if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(file.Name))
                 {
                     StorageApplicationPermissions.FutureAccessList.AddOrReplace(file.Name, file);
+
+                    await ProcessFileSelection(file);
                 }
-                await ProcessFileSelection(file);
-                
             }
             ShowProgressBar.Visibility = Visibility.Collapsed;
 
@@ -394,7 +394,9 @@ namespace CineSphere
             if ((unpoint.Position.X <= screenCoords.X + controls.RefHolder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + controls.RefHolder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
             { }
             else {
-                
+
+
+                Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
                 switchViews("colorPickerClose");
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedMainGrid);
             }

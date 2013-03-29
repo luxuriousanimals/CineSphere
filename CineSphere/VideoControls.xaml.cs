@@ -869,9 +869,9 @@ namespace CineSphere
                      unpoint.Position.X - videoControllerGrid.Width / 2);
 
             double yPos =
-               (unpoint.Position.Y - videoControllerGrid.Height / 2 < Window.Current.Bounds.Top + videoControllerGrid.Height / 2) ?
+               (unpoint.Position.Y < Window.Current.Bounds.Top + videoControllerGrid.Height/2) ?
                  Window.Current.Bounds.Top :
-                      ((unpoint.Position.Y > Window.Current.Bounds.Bottom - videoControllerGrid.Height / 2) ?
+                      ((unpoint.Position.Y > Window.Current.Bounds.Bottom - videoControllerGrid.Height) ?
                     Window.Current.Bounds.Bottom - videoControllerGrid.Height :
                     unpoint.Position.Y - videoControllerGrid.Height / 2);
 
