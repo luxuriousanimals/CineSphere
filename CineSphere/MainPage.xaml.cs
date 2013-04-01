@@ -83,29 +83,29 @@ namespace CineSphere
         }
 
 
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            await SetCollectionViewSource();
-
             base.OnNavigatedTo(e);
+            await SetCollectionViewSource();
             itemGridView.ItemClick += itemGridView_ItemClick;
+
+            mainGrid.Opacity = 1;
             // Current.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x77, 0x77, 0x77));
 
         }
 
         async Task SetCollectionViewSource()
         {
-           // var collectionViewSource = Application.Current.Resources["itemsViewSource"] as CollectionViewSource;
              
             IStorageItem mru = null;
             if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
             {
                 mru = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
-                // mruGridView.ItemsSource = _movieList.GetMRU(mru.Path);
-                //mruGridView.SelectedItem = null;
-                //itemGridView.ItemsSource = _movieList.GetAll(mru.Path);
 
-                videoList.Source = _movieList.GetAll(mru.Path);
+
+                //videoList.Source = _movieList.GetAll(mru.Path);
+                videoList.Source = _movieList.GetAll();
             }
             else
             {
@@ -284,15 +284,15 @@ namespace CineSphere
         {
             if (vidPlayer.Position.TotalSeconds != 0) {
                 var prevFile = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
-
+                
                 _movieList.Update(new Video { Title = prevFile.Name, Path = prevFile.Path, rememberFullscreen = controls.IsFullscreen, LastPosition=(int)vidPlayer.Position.TotalMilliseconds  });
 
             }
-            Debug.WriteLine(controls.IsFullscreen);
-            Debug.WriteLine((int)vidPlayer.Position.TotalMilliseconds);
-            if (controls.IsFullscreen) controls.FullscreenToggle();
+          
 
-            await SetCollectionViewSource();            
+
+            await SetCollectionViewSource();
+            if (controls.IsFullscreen) controls.FullscreenToggle();
             switchViews("Library");
            // this.Frame.Navigate(typeof(MainPage));
 
@@ -312,11 +312,13 @@ namespace CineSphere
                     // VisualStateManager.GoToState(this, "Negative", useTransitions);
                     videoPlayer.Pause();
 
+                    controls._controlsStopTimer();
+
                     VisualStateManager.GoToState(this, "CloseVideoView", true);
                     VisualStateManager.GoToState(controls, "CloseVideoView", true);
                     controls.isVisible = false;
                     //controls.Visibility = Visibility.Collapsed;
-                    MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, controls.pointerpressedstage);
+                    mainGrid.RemoveHandler(Control.PointerPressedEvent, controls.pointerpressedstage);
 
                     break;
 
@@ -326,7 +328,7 @@ namespace CineSphere
                     break;
 
                 case "colorPickerClose":
-                    Debug.WriteLine("thism6");
+
                     VisualStateManager.GoToState(controls, "resetColorPicker", true);
 
                     break;
@@ -350,7 +352,7 @@ namespace CineSphere
 
             await SetMediaElementSourceAsync(item);
             switchViews("Video");
-            videoPlayer.Play();
+            //videoPlayer.Play();
 
         }
 
@@ -361,11 +363,17 @@ namespace CineSphere
             var stream = await video.OpenAsync(Windows.Storage.FileAccessMode.Read);
             MediaControl.TrackName = video.DisplayName;
             videoPlayer.SetSource(stream, video.ContentType);
-            if (file.LastPosition != 0) Debug.WriteLine((int)file.LastPosition);
-            if (file.rememberFullscreen) controls.FullscreenToggle();
             videoPlayer.Play();
+            if (file.LastPosition != 0)
+           { 
+                TimeSpan ts =  new TimeSpan(0, 0, 0, 0, file.LastPosition);
+                videoPlayer.Position = ts;
+                controls.MyProgressHelper.VideoPosition = file.LastPosition;
+
+            }
 
             StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("LastUsedFile", video, "metadata");
+            if (file.rememberFullscreen) controls.FullscreenOn();
 
         }
 
@@ -408,17 +416,15 @@ namespace CineSphere
 
         private async void RemoveFile(object sender, RoutedEventArgs e)
         {
-             //string result = customer.DeleteCustomer(customer.Id);
-           
-         foreach(Video item in itemGridView.SelectedItems) {
 
-             _movieList.Remove(item);
-             await SetCollectionViewSource();
-             //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(item.Img));
-             //await file.DeleteAsync();
+            bottomAppBar.IsOpen = false;
+
+         foreach(Video item in itemGridView.SelectedItems) {
+            _movieList.Remove(item);
          }
 
-
+         RemoveFileAppBarButton.Visibility = Visibility.Collapsed;
+         await SetCollectionViewSource();
 
         }
 

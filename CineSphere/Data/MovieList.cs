@@ -33,7 +33,7 @@ namespace CineSphere.Data
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
                     var existingItem = (connection.Table<Video>().Where(
-               v => v.Path == video.Path)).SingleOrDefault();
+              v => v.Id == video.Id)).SingleOrDefault();
 
                     if (existingItem == null)
                     {
@@ -52,11 +52,10 @@ namespace CineSphere.Data
                 string result; 
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
+                    var existingItem = (connection.Table<Video>().Where(
+                  v => v.Id == video.Id)).Single();
 
-                    var existingProject = (connection.Table<Video>().Where(
-                  v => v.Path == video.Path)).Single();
-
-                    if (connection.Delete(existingProject) > 0)
+                    if (connection.Delete(existingItem) > 0)
                     {
                         result = "Success";
 
@@ -74,11 +73,13 @@ namespace CineSphere.Data
             {
                 using (var connection = new SQLiteConnection(_dbPath))
                 {
+                    var existingItem = (connection.Table<Video>().Where(
+                          v => v.Path == video.Path)).Single();
 
-                    //Debug.WriteLine(video);
-                    //Debug.WriteLine("beta");
-                    
-                    connection.Update(video);
+                    existingItem.rememberFullscreen = video.rememberFullscreen;
+                    existingItem.LastPosition = video.LastPosition;
+
+                    connection.Update(existingItem);
 
                 }
             }
@@ -91,12 +92,12 @@ namespace CineSphere.Data
 
                             if (e == null)
                             {
-
                                 var query = db.Table<Video>().OrderBy(v => v.Id);
                                 foreach (var _video in query)
                                 {
                                     var videes = new Video()
                                     {
+                                        Id = _video.Id,
                                         Title = _video.Title,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,
@@ -112,6 +113,7 @@ namespace CineSphere.Data
                                 {
                                     var videes = new Video()
                                     {
+                                        Id = _video.Id,
                                         Title = _video.Title,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,
@@ -127,6 +129,7 @@ namespace CineSphere.Data
                                 {
                                     var videes = new Video()
                                     {
+                                        Id = _video.Id,
                                         Title = _video.Title,
                                         Img = pathToImage(_video.Img),
                                         Path = _video.Path,

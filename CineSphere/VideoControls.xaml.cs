@@ -39,7 +39,7 @@ namespace CineSphere
         private DispatcherTimer _timer;
         private DispatcherTimer _controlsTimer;
         private Ellipse ControlBackground;
-       // private Image ProgressDot;
+        // private Image ProgressDot;
         private Canvas ProgressDot;
         private double _CenterX;
         private double _CenterY;
@@ -71,13 +71,13 @@ namespace CineSphere
         private static MediaElement videoPlayer;
 
         private MineColorHelper MyColors = MainPage.Current.MyColors;
-        private ProgressHelper MyProgressHelper;
+        public ProgressHelper MyProgressHelper;
         public Grid RefHolder;
-        public Grid RefMaster; 
+        public Grid RefMaster;
 
         public VideoControls()
         {
-           
+
             this.InitializeComponent();
 
             Current = this;
@@ -147,7 +147,7 @@ namespace CineSphere
             ProgressRange = ProgressMax - ProgressMin;
 
 
-          
+
             ControlBackground = new Ellipse();
             ControlBackground.Fill = MyColors.HolderFillColor;
             ControlBackground.Width = Diameter;
@@ -172,7 +172,6 @@ namespace CineSphere
 
 
             pointerpressedstage = new PointerEventHandler(showControls);
-
             PointerEventHandler pointerovercontrols = new PointerEventHandler(_resetTimerHandler);
             Holder.AddHandler(Control.PointerMovedEvent, pointerovercontrols, true);
         }
@@ -214,15 +213,15 @@ namespace CineSphere
             ProgressDot.HorizontalAlignment = HorizontalAlignment.Left;
 
             ProgressDotRot = new RotateTransform();
-            ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? ProgressMax +90 : ProgressPosition + 90;
+            ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? ProgressMax + 90 : ProgressPosition + 90;
             ProgressDotRot.CenterX = 0;
             ProgressDotRot.CenterY = 0;
 
             ProgressDotTransformGroup.Children.Add(ProgressDotInitTrans);
             ProgressDotTransformGroup.Children.Add(ProgressDotRot);
             ProgressDotTransformGroup.Children.Add(ProgressDotTrans);
-            ProgressDot.RenderTransform = ProgressDotTransformGroup;            
-            
+            ProgressDot.RenderTransform = ProgressDotTransformGroup;
+
             ProgressSlider = new Windows.UI.Xaml.Shapes.Path();
             ProgressSlider.Data = this.Sector(_CenterX, _CenterY, Diameter - 2, ProgressPosition, ProgressMax);
             ProgressSlider.Fill = new SolidColorBrush(Color.FromArgb(168, 255, 255, 255));
@@ -452,7 +451,7 @@ namespace CineSphere
         {
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(SliderFrequency(videoPlayer.NaturalDuration.TimeSpan));
-            MyProgressHelper.VideoPosition = SliderFrequency(videoPlayer.NaturalDuration.TimeSpan);
+            //MyProgressHelper.VideoPosition = SliderFrequency(videoPlayer.NaturalDuration.TimeSpan);
             StartTimer();
         }
 
@@ -460,20 +459,22 @@ namespace CineSphere
         {
             if (!_progressHasInteraction)
             {
-                MyProgressHelper.VideoPosition = videoPlayer.Position.TotalMilliseconds;
+
+                //MyProgressHelper.VideoPosition = videoPlayer.Position.TotalMilliseconds;
                 ProgressPosition = ProgressMax - (videoPlayer.Position.TotalMilliseconds / videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds) * (ProgressMax - ProgressMin);
-        
+
                 if (ProgressPosition >= ProgressMax) ProgressPosition = ProgressMax;
                 if (ProgressPosition <= ProgressMin) ProgressPosition = ProgressMin;
             }
-            else if(_progressHasInteraction) {
+            else if (_progressHasInteraction)
+            {
 
                 _resetTimer();
             }
             ProgressSlider.Data = this.Sector((Canvas.GetLeft(ControlBackground) + ControlBackground.Width / 2), (Canvas.GetTop(ControlBackground) + ControlBackground.Height / 2), Diameter, ProgressPosition, ProgressMax);
 
             ProgressDotRot.Angle = (Double.IsNaN(ProgressPosition)) ? ProgressMax + 90 : ProgressPosition + 90;
-           
+
             ProgressDotTrans.X = _CenterX + (r * _outerArcModifier) * Math.Cos(ProgressPosition * rad);
             ProgressDotTrans.Y = _CenterY + (r * _outerArcModifier) * Math.Sin(ProgressPosition * rad);
 
@@ -485,7 +486,7 @@ namespace CineSphere
             _timer.Start();
         }
 
-        private void StopTimer()
+        public void StopTimer()
         {
             _timer.Stop();
             _timer.Tick -= _timer_Tick;
@@ -522,18 +523,10 @@ namespace CineSphere
 
         }
 
-        void MediaControl_PlayPressed(object sender, object e)
-        {
-            videoPlayer.Play();
-        }
-
-        void MediaControl_PausePressed(object sender, object e)
-        {
-            videoPlayer.Pause();
-        }
-
+      
         public void videoPlayer_MediaOpened(object sender, RoutedEventArgs e)
         {
+
             double absvalue = (int)Math.Round(videoPlayer.NaturalDuration.TimeSpan.TotalSeconds, MidpointRounding.AwayFromZero);
 
             TimeSpan t = TimeSpan.FromMilliseconds(videoPlayer.NaturalDuration.TimeSpan.TotalSeconds);
@@ -542,7 +535,14 @@ namespace CineSphere
 
             MyProgressHelper.Volume = videoPlayer.Volume * VolumeMax;
 
+            if (MyProgressHelper.VideoPosition != 0)
+            {
+                videoPlayer.Position = new TimeSpan(0, 0, 0, 0, (int)MyProgressHelper.VideoPosition);
+            }
+
             SetupTimer();
+            if (IsFullscreen) FullscreenOn();
+
         }
 
         private void ColorPicker_Click(object sender, RoutedEventArgs e)
@@ -553,102 +553,23 @@ namespace CineSphere
             {
 
                 VisualStateManager.GoToState(this, "showColorPicker", true);
-                //ColorPickerHolder.Opacity = 1;
-                //ColorPickerHolder.Visibility = Visibility.Visible;
-
-                //PlayBackHolder.Opacity = 0;
-                //PlayBackHolder.Visibility = Visibility.Collapsed;
+            
             }
-            else {
+            else
+            {
 
                 VisualStateManager.GoToState(this, "hideColorPicker", true);
 
-                //ColorPickerHolder.Opacity = 0;
-                //ColorPickerHolder.Visibility = Visibility.Collapsed;
-
-                //PlayBackHolder.Opacity = 1;
-                //PlayBackHolder.Visibility = Visibility.Visible;
-
             }
 
-            //switch (CurrentColor)
-            //{
-            //    case "null":
-            //        MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
-            //        MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(168, 180, 0, 0));
-            //        MyColors.HolderFillColor = new SolidColorBrush(Color.FromArgb(102, 0, 0, 0));
-            //        MyColors.StrokeColorA = new SolidColorBrush(Color.FromArgb(102, 255, 0, 0));
-            //        MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            //        MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
-            //        CurrentColor = "red";
-            //        MainPage.Current.tintView.Opacity = .22;
-            //        MainPage.Current.tintView.Visibility = Visibility.Visible;
-
-            //        break;
-            //    case "red":
-            //        MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
-            //        MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(168, 0, 180, 0));
-            //        MyColors.HolderFillColor = new SolidColorBrush(Color.FromArgb(102, 0, 0, 0));
-            //        MyColors.StrokeColorA = new SolidColorBrush(Color.FromArgb(102, 0, 255, 0));
-            //        MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            //        MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 0, 255, 0));
-            //        CurrentColor = "green";
-            //        MainPage.Current.tintView.Opacity = .22;
-            //        MainPage.Current.tintView.Visibility = Visibility.Visible;
-
-            //        break;
-            //    case "green":
-            //        MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
-            //        MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(168, 0, 0, 180));
-            //        MyColors.HolderFillColor = new SolidColorBrush(Color.FromArgb(102, 0, 0, 0));
-            //        MyColors.StrokeColorA = new SolidColorBrush(Color.FromArgb(102, 0, 0, 255));
-            //        MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            //        MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 0, 0, 255));
-            //        CurrentColor = "blue";
-            //        MainPage.Current.tintView.Opacity = .22;
-            //        MainPage.Current.tintView.Visibility = Visibility.Visible;
-
-            //        break;
-            //    case "blue":
-            //        MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
-            //        MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(168, 255, 255, 255));
-            //        MyColors.HolderFillColor = new SolidColorBrush(Color.FromArgb(102, 0, 0, 0));
-            //        MyColors.StrokeColorA = new SolidColorBrush(Color.FromArgb(102, 255, 255, 255));
-            //        MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            //        MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            //        CurrentColor = "null";
-            //        MainPage.Current.tintView.Opacity = .0;
-
-            //        break;
-            //}
-
         }
 
-        private void PlayButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (videoPlayer.DefaultPlaybackRate == 0)
-            {
-                videoPlayer.DefaultPlaybackRate = 1.0;
-                videoPlayer.PlaybackRate = 1.0;
-            }
-
-            SetupTimer();
-            videoPlayer.Play();
-        }
-
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
-        {
-            videoPlayer.Pause();
-        }
-
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            videoPlayer.Stop();
-
-        }
-
+      
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
         {
+
+            Debug.WriteLine(MediaElementState.Playing);
+
             videoPlayer.DefaultPlaybackRate = 0.0;
             videoPlayer.PlaybackRate = 4.0;
             _controlsStopTimer();
@@ -656,6 +577,8 @@ namespace CineSphere
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
         {
+
+            Debug.WriteLine(MediaElementState.Playing);
 
             videoPlayer.DefaultPlaybackRate = 0.0;
             videoPlayer.PlaybackRate = -4.0;
@@ -699,32 +622,33 @@ namespace CineSphere
 
             string objstring = obj.ToString();
 
-            Debug.WriteLine(objstring);
-
-            if (!objstring.Equals("#FF767676", StringComparison.Ordinal))
+            if (!objstring.Equals("#FF767676", StringComparison.Ordinal) && !objstring.Equals("#FF000000", StringComparison.Ordinal) && !objstring.Equals("#FFFFFFFF", StringComparison.Ordinal))
             {
 
-            MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(204, (byte)(obj.R * .69), (byte)(obj.G * .69), (byte)(obj.B * .69)));
-            MyColors.ProgressFrameFillColor = new SolidColorBrush(Color.FromArgb(255, obj.R, obj.G, obj.B));
-            MyColors.VolumeSliderFillColor = new SolidColorBrush(Color.FromArgb(255, obj.R, obj.G, obj.B));
+                MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(204, (byte)(obj.R * .69), (byte)(obj.G * .69), (byte)(obj.B * .69)));
+                MyColors.ProgressFrameFillColor = new SolidColorBrush(Color.FromArgb(255, obj.R, obj.G, obj.B));
+                MyColors.VolumeSliderFillColor = new SolidColorBrush(Color.FromArgb(255, obj.R, obj.G, obj.B));
 
-            MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(204, (byte)(obj.R * .69), (byte)(obj.G * .69), (byte)(obj.B * .69)));
+                MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+                MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(204, (byte)(obj.R * .69), (byte)(obj.G * .69), (byte)(obj.B * .69)));
 
-            MainPage.Current.tintView.Opacity = .1;
-            MainPage.Current.tintView.Visibility = Visibility.Visible;
-            } else {
-           MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
-            MyColors.ProgressFrameFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
-            MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            MyColors.VolumeSliderFillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            MyColors.HolderFillColor = new SolidColorBrush(Color.FromArgb(102, 0, 0, 0));
-            MyColors.StrokeColorA = new SolidColorBrush(Color.FromArgb(102, 255, 255, 255));
-            MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                MainPage.Current.tintView.Opacity = .1;
+                MainPage.Current.tintView.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MyColors.ButtonBackGroundFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
+                MyColors.ProgressFrameFillColor = new SolidColorBrush(Color.FromArgb(41, 255, 255, 255));
+                MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                MyColors.VolumeSliderFillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                MyColors.HolderFillColor = new SolidColorBrush(Color.FromArgb(102, 0, 0, 0));
+                MyColors.StrokeColorA = new SolidColorBrush(Color.FromArgb(102, 255, 255, 255));
+                MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+                MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
-            MainPage.Current.tintView.Opacity = 0;
-            MainPage.Current.tintView.Visibility = Visibility.Collapsed;}
+                MainPage.Current.tintView.Opacity = 0;
+                MainPage.Current.tintView.Visibility = Visibility.Collapsed;
+            }
 
         }
 
@@ -765,6 +689,47 @@ namespace CineSphere
             _resetTimer();
         }
 
+        public void FullscreenOff()
+        {
+                this.IsFullscreen = true;
+
+                hideControls();
+
+                _previousmediasize.Height = videoPlayer.Height;
+                _previousmediasize.Width = videoPlayer.Width;
+                _previousmediaelementmargin = MainPage.Current.mainGrid.Margin;
+
+                _previousBGColor = MainPage.Current.mainGrid.Background;
+                MainPage.Current.mainGrid.Margin = new Thickness();
+                MainPage.Current.mainGrid.Background = new SolidColorBrush(Colors.Black);
+                MainPage.Current.tintView.Visibility = Visibility.Collapsed;
+
+                videoPlayer.Width = Window.Current.Bounds.Width;
+                videoPlayer.Height = double.NaN;
+        
+        }
+
+
+        public void FullscreenOn()
+        {
+            this.IsFullscreen = false;
+
+            hideControls();
+
+            _previousmediasize.Height = videoPlayer.Height;
+            _previousmediasize.Width = videoPlayer.Width;
+            _previousmediaelementmargin = MainPage.Current.mainGrid.Margin;
+
+            _previousBGColor = MainPage.Current.mainGrid.Background;
+            MainPage.Current.mainGrid.Margin = new Thickness();
+            MainPage.Current.mainGrid.Background = new SolidColorBrush(Colors.Black);
+            MainPage.Current.tintView.Visibility = Visibility.Collapsed;
+
+            videoPlayer.Width = Window.Current.Bounds.Width;
+            videoPlayer.Height = double.NaN;
+        }
+
+
         void FullscreenButton_Click(object sender, RoutedEventArgs e)
         {
             FullscreenToggle();
@@ -801,7 +766,6 @@ namespace CineSphere
         {
             if (_volumeTouchedDown)
             {
-                Debug.WriteLine("lost 2");
                 _resetTimer();
 
                 _volumeTouchedDown = false;
@@ -830,18 +794,19 @@ namespace CineSphere
         #endregion
 
         #region Control Visible Logic
-     
+
         private void hideControls()
         {
+            Debug.WriteLine(isVisible);
+
             if (isVisible)
             {
-                Debug.WriteLine("thism2");
 
                 VisualStateManager.GoToState(this, "hideController", true);
             }
-             isVisible = false;
+            isVisible = false;
             //videoControllerGrid.Visibility = Visibility.Collapsed;
-           
+
         }
 
         private void hideControlsE(object sender, PointerRoutedEventArgs e)
@@ -856,22 +821,22 @@ namespace CineSphere
 
             if ((unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
             { }
-            else {
+            else
+            {
                 hideControls();
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
                 pointerpressedstage = new PointerEventHandler(showControls);
                 MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
-            
+
             }
         }
 
         private void showControls(object sender, PointerRoutedEventArgs e)
         {
-
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
 
             if (unpoint.Properties.IsRightButtonPressed) return;
-            
+
             double xPos =
                 (unpoint.Position.X - videoControllerGrid.Width / 2 < Window.Current.Bounds.Left + videoControllerGrid.Width / 2) ?
                   Window.Current.Bounds.Left :
@@ -880,10 +845,10 @@ namespace CineSphere
                      unpoint.Position.X - videoControllerGrid.Width / 2);
 
             double yPos =
-               (unpoint.Position.Y < Window.Current.Bounds.Top + videoControllerGrid.Height/2) ?
+               (unpoint.Position.Y < Window.Current.Bounds.Top + videoControllerGrid.Height / 2) ?
                  Window.Current.Bounds.Top :
                       ((unpoint.Position.Y > Window.Current.Bounds.Bottom - videoControllerGrid.Height) ?
-                    Window.Current.Bounds.Bottom - videoControllerGrid.Height - 30:
+                    Window.Current.Bounds.Bottom - videoControllerGrid.Height - 30 :
                     unpoint.Position.Y - videoControllerGrid.Height / 2);
 
             if (unpoint.Position.Y < 60 && unpoint.Position.Y < 60) return;
@@ -919,7 +884,7 @@ namespace CineSphere
             _controlsTimer.Start();
         }
 
-        private void _controlsStopTimer()
+        public void _controlsStopTimer()
         {
             _controlsTimer.Stop();
             _controlsTimer.Tick -= _controlsTimer_Tick;
@@ -959,7 +924,7 @@ namespace CineSphere
                 else
                 {
 
-                    VisualStateManager.GoToState(this, "hideController", true);
+                    if (isVisible) VisualStateManager.GoToState(this, "hideController", true);
                 }
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
                 pointerpressedstage = new PointerEventHandler(showControls);
@@ -978,8 +943,8 @@ namespace CineSphere
             if (unpoint.Properties.IsRightButtonPressed) return;
 
             double D = Math.Sqrt(Math.Pow(_CenterX - unpoint.Position.X, 2) + Math.Pow(_CenterY - unpoint.Position.Y, 2));
-            if (D <= Diameter/5) return;
-            
+            if (D <= Diameter / 5) return;
+
             var ttv = ColorPickerHolder.TransformToVisual(Window.Current.Content);
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
 
@@ -993,7 +958,7 @@ namespace CineSphere
                 HandleColorChange(newColor);
             }
 
-    
+
         }
 
         private void PointerUp(object sender, PointerRoutedEventArgs e)
@@ -1004,8 +969,9 @@ namespace CineSphere
             {
                 VisualStateManager.GoToState(this, "resetColorPicker", true);
             }
-            else if(_isSelectingColor) {
-         
+            else if (_isSelectingColor)
+            {
+
                 VisualStateManager.GoToState(this, "hideColorPicker", true);
             }
             _isSelectingColor = false;
@@ -1026,11 +992,11 @@ namespace CineSphere
             if (_isSelectingColor)
             {
 
-              
+
                 Color newColor = Win32.GetPixelColor((int)screenCoords.X + (int)unpoint.Position.X, (int)screenCoords.Y + (int)unpoint.Position.Y);
                 HandleColorChange(newColor);
 
-                
+
 
 
             }

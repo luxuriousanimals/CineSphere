@@ -47,7 +47,7 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Style="{StaticResource LayoutRootStyle}" Name="MainGrid">
+    <Grid Style="{StaticResource LayoutRootStyle}" Name="MainGrid" Opacity="0">
         <Grid.Background>
             <ImageBrush ImageSource="/Assets/background.jpg"  Stretch="Fill"/>
         </Grid.Background>
@@ -55,7 +55,11 @@
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+        
+        <Canvas Grid.Row="0" Opacity="0" Visibility="Collapsed">
+            <Image x:Name="extendedSplashImage" Source="Assets/620x300.png" />
+        </Canvas>
+        
         <Grid Name="TintView" Opacity=".1" Grid.RowSpan="2" Visibility="Collapsed" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding ProgressFrameFillColor, Mode=OneWay}" IsHitTestVisible="False"/>
 
 
@@ -76,10 +80,11 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}"
+           
             >
             <GridView.Transitions>
             <TransitionCollection>
-                <!--<EntranceThemeTransition/>-->
+                <EntranceThemeTransition IsStaggeringEnabled="False"/>
             </TransitionCollection>
             </GridView.Transitions>
             <!--<GridView.ItemsPanel>
