@@ -44,6 +44,19 @@ namespace CineSphere.Common
             }
         }
 
+
+        private double _currentPlaybackRate;
+        public double CurrentPlaybackRate
+        {
+            get { return _currentPlaybackRate; }
+            set
+            {
+                _currentPlaybackRate = value;
+                NotifyPropertyChanged("CurrentPlaybackRate");
+
+            }
+        }
+
         public void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)

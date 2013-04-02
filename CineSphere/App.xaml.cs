@@ -33,12 +33,12 @@ namespace CineSphere
             {
                 rootFrame = new Frame();
 
-                rootFrame.Background = new ImageBrush
-                {
-                    Stretch = Windows.UI.Xaml.Media.Stretch.UniformToFill,
-                    ImageSource =
-                        new BitmapImage { UriSource = new Uri("ms-appx:///Assets/background.jpg") }
-                };
+                //rootFrame.Background = new ImageBrush
+                //{
+                //    Stretch = Windows.UI.Xaml.Media.Stretch.UniformToFill,
+                //    ImageSource =
+                //        new BitmapImage { UriSource = new Uri("ms-appx:///Assets/background.jpg") }
+                //};
 
                 SuspensionManager.RegisterFrame(rootFrame, "AppFrame");
 

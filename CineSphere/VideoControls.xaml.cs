@@ -32,7 +32,7 @@ namespace CineSphere
         public string CurrentColor = "null";
 
         private Thickness _previousmediaelementmargin;
-        private Brush _previousBGColor;
+        private Brush _originalBG;
         private Size _previousmediasize;
         private static VideoControls Current;
         private Canvas VolumeControlHolder;
@@ -114,28 +114,6 @@ namespace CineSphere
             ColorpickerButton.DataContext = MyColors;
         }
 
-        /// <summary>
-        /// Populates the page with content passed during navigation.  Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="navigationParameter">The parameter value passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested.
-        /// </param>
-        /// <param name="pageState">A dictionary of state preserved by this page during an earlier
-        /// session.  This will be null the first time a page is visited.</param>
-        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
-        {
-        }
-
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache.  Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
-        protected override void SaveState(Dictionary<String, Object> pageState)
-        {
-        }
         public void DrawControls()
         {
             Diameter = 360;
@@ -146,7 +124,7 @@ namespace CineSphere
             _outerArcModifier = 1.1;
             ProgressRange = ProgressMax - ProgressMin;
 
-
+            _originalBG = MainPage.Current.mainGrid.Background;
 
             ControlBackground = new Ellipse();
             ControlBackground.Fill = MyColors.HolderFillColor;
@@ -425,17 +403,14 @@ namespace CineSphere
             {
 
                 videoPlayer.DefaultPlaybackRate = 0;
-
-
+                
                 PointerPoint unpoint = e.GetCurrentPoint(PlayBackHolder);
                 if (unpoint.Properties.IsRightButtonPressed) return;
 
                 double newPoint = Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 >= 0 ?
                                   Math.Max(Math.Min(Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 - 90, ProgressMax), ProgressMin) :
                                   Math.Max(Math.Min(Math.Atan2(unpoint.Position.X - _CenterX, _CenterY - unpoint.Position.Y) / Math.PI * 180 + 270, ProgressMax), ProgressMin);
-
-
-
+                
                 ProgressPosition = newPoint;
                 videoPlayer.Position = TimeSpan.FromMilliseconds((ProgressMax - ProgressPosition) / (ProgressMax - ProgressMin) * videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds);
                 MyProgressHelper.VideoPosition = videoPlayer.Position.TotalMilliseconds;
@@ -451,16 +426,28 @@ namespace CineSphere
         {
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(SliderFrequency(videoPlayer.NaturalDuration.TimeSpan));
-            //MyProgressHelper.VideoPosition = SliderFrequency(videoPlayer.NaturalDuration.TimeSpan);
             StartTimer();
         }
 
         private void _timer_Tick(object sender, object e)
         {
+
+
+            if (videoPlayer.CurrentState == MediaElementState.Playing)
+            {
+                ActualPause.Opacity = 1;
+                ActualPlay.Opacity = 0;
+            }
+            else
+            {
+                ActualPause.Opacity = 0;
+                ActualPlay.Opacity = 1;
+            }
+
             if (!_progressHasInteraction)
             {
 
-                //MyProgressHelper.VideoPosition = videoPlayer.Position.TotalMilliseconds;
+                MyProgressHelper.VideoPosition = (videoPlayer.Position.TotalMilliseconds == 0) ? MyProgressHelper.VideoPosition : videoPlayer.Position.TotalMilliseconds;
                 ProgressPosition = ProgressMax - (videoPlayer.Position.TotalMilliseconds / videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds) * (ProgressMax - ProgressMin);
 
                 if (ProgressPosition >= ProgressMax) ProgressPosition = ProgressMax;
@@ -513,7 +500,6 @@ namespace CineSphere
                         videoPlayer.PlaybackRate = 1.0;
                     }
 
-                    SetupTimer();
                     videoPlayer.Play();
                     ActualPause.Opacity = 1;
                     ActualPlay.Opacity = 0;
@@ -534,6 +520,8 @@ namespace CineSphere
             videoPlayer.Width = Window.Current.Bounds.Width * .66;
 
             MyProgressHelper.Volume = videoPlayer.Volume * VolumeMax;
+            MyProgressHelper.CurrentPlaybackRate = 1;
+
 
             if (MyProgressHelper.VideoPosition != 0)
             {
@@ -543,6 +531,10 @@ namespace CineSphere
             SetupTimer();
             if (IsFullscreen) FullscreenOn();
 
+            MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+            pointerpressedstage = new PointerEventHandler(showControls);
+            MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+            videoPlayer.Play();
         }
 
         private void ColorPicker_Click(object sender, RoutedEventArgs e)
@@ -567,23 +559,61 @@ namespace CineSphere
       
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
         {
-
-            Debug.WriteLine(MediaElementState.Playing);
-
+            if (videoPlayer.CurrentState == MediaElementState.Paused) videoPlayer.Play();
             videoPlayer.DefaultPlaybackRate = 0.0;
-            videoPlayer.PlaybackRate = 4.0;
             _controlsStopTimer();
+            switch ((int)MyProgressHelper.CurrentPlaybackRate)
+            {
+                case 1:
+                default: 
+                videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 4.0;
+                    RewindButtonText.Text = "";
+                    ForwardButtonText.Text = "";
+                break;
+                case 4:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 8.0;
+                break;
+                case 8:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 16.0;
+                break;
+                case 16:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 1.0;
+             
+                break;
+
+            }
+            Debug.WriteLine(Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString());
+            ForwardButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString();
+
         }
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
         {
-
-            Debug.WriteLine(MediaElementState.Playing);
-
+            if (videoPlayer.CurrentState == MediaElementState.Paused) videoPlayer.Play();
             videoPlayer.DefaultPlaybackRate = 0.0;
-            videoPlayer.PlaybackRate = -4.0;
             _controlsStopTimer();
+            switch ((int)MyProgressHelper.CurrentPlaybackRate)
+            {
+                case 1:
+                default:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = -4.0;
+                    RewindButtonText.Text = "";
+                    ForwardButtonText.Text = "";
+                    break;
+                case -4:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = -8.0;
+                    break;
+                case -8:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = -16.0;
+                    break;
+                case -16:
+                    videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 1.0;
+                    break;
 
+            }
+            RewindButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString();
+
+           
         }
 
         private double SliderFrequency(TimeSpan timevalue)
@@ -649,7 +679,7 @@ namespace CineSphere
                 MainPage.Current.tintView.Opacity = 0;
                 MainPage.Current.tintView.Visibility = Visibility.Collapsed;
             }
-
+            _controlsStopTimer();
         }
 
 
@@ -666,7 +696,6 @@ namespace CineSphere
                 _previousmediasize.Width = videoPlayer.Width;
                 _previousmediaelementmargin = MainPage.Current.mainGrid.Margin;
 
-                _previousBGColor = MainPage.Current.mainGrid.Background;
                 MainPage.Current.mainGrid.Margin = new Thickness();
                 MainPage.Current.mainGrid.Background = new SolidColorBrush(Colors.Black);
                 MainPage.Current.tintView.Visibility = Visibility.Collapsed;
@@ -678,7 +707,7 @@ namespace CineSphere
             {
                 hideControls();
 
-                MainPage.Current.mainGrid.Background = _previousBGColor;
+                MainPage.Current.mainGrid.Background = _originalBG;
                 MainPage.Current.mainGrid.Margin = _previousmediaelementmargin;
                 MainPage.Current.tintView.Visibility = Visibility.Visible;
 
@@ -691,28 +720,23 @@ namespace CineSphere
 
         public void FullscreenOff()
         {
-                this.IsFullscreen = true;
+                this.IsFullscreen = false;
 
                 hideControls();
 
-                _previousmediasize.Height = videoPlayer.Height;
-                _previousmediasize.Width = videoPlayer.Width;
-                _previousmediaelementmargin = MainPage.Current.mainGrid.Margin;
+                MainPage.Current.mainGrid.Background = _originalBG;
+                MainPage.Current.mainGrid.Margin = _previousmediaelementmargin;
+                MainPage.Current.tintView.Visibility = Visibility.Visible;
 
-                _previousBGColor = MainPage.Current.mainGrid.Background;
-                MainPage.Current.mainGrid.Margin = new Thickness();
-                MainPage.Current.mainGrid.Background = new SolidColorBrush(Colors.Black);
-                MainPage.Current.tintView.Visibility = Visibility.Collapsed;
-
-                videoPlayer.Width = Window.Current.Bounds.Width;
-                videoPlayer.Height = double.NaN;
+                videoPlayer.Width = _previousmediasize.Width;
+                videoPlayer.Height = _previousmediasize.Height;
         
         }
 
 
         public void FullscreenOn()
         {
-            this.IsFullscreen = false;
+            this.IsFullscreen = true;
 
             hideControls();
 
@@ -720,7 +744,6 @@ namespace CineSphere
             _previousmediasize.Width = videoPlayer.Width;
             _previousmediaelementmargin = MainPage.Current.mainGrid.Margin;
 
-            _previousBGColor = MainPage.Current.mainGrid.Background;
             MainPage.Current.mainGrid.Margin = new Thickness();
             MainPage.Current.mainGrid.Background = new SolidColorBrush(Colors.Black);
             MainPage.Current.tintView.Visibility = Visibility.Collapsed;
@@ -786,8 +809,6 @@ namespace CineSphere
                 MyProgressHelper.Volume = newVolumePosition;
 
 
-                //Debug.WriteLine("liteup " + newVolumePosition / 13);
-
 
             }
         }
@@ -797,20 +818,27 @@ namespace CineSphere
 
         private void hideControls()
         {
-            Debug.WriteLine(isVisible);
-
             if (isVisible)
             {
+                Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+
+                isVisible = false;
 
                 VisualStateManager.GoToState(this, "hideController", true);
+                _controlsStopTimer();
+
+                if (MainPage.Current.vidView.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
+
+                MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                pointerpressedstage = new PointerEventHandler(showControls);
+                MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
             }
-            isVisible = false;
-            //videoControllerGrid.Visibility = Visibility.Collapsed;
 
         }
 
         private void hideControlsE(object sender, PointerRoutedEventArgs e)
         {
+            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
 
@@ -820,22 +848,35 @@ namespace CineSphere
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
 
             if ((unpoint.Position.X <= screenCoords.X + Holder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + Holder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
-            { }
+            {
+                //_controlsStopTimer();
+                //return;
+            }
             else
             {
-                hideControls();
-                MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
-                pointerpressedstage = new PointerEventHandler(showControls);
-                MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                if (isVisible)
+                {
+                    VisualStateManager.GoToState(this, "hideControllerFast", true);
+                    isVisible = false;
+                    MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                    pointerpressedstage = new PointerEventHandler(showControls);
+                    MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                    _controlsStopTimer();
+
+                }
 
             }
         }
 
         private void showControls(object sender, PointerRoutedEventArgs e)
         {
-            PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
 
+            PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
+            
             if (unpoint.Properties.IsRightButtonPressed) return;
+            if (MainPage.Current.vidView.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
+            
+
 
             double xPos =
                 (unpoint.Position.X - videoControllerGrid.Width / 2 < Window.Current.Bounds.Left + videoControllerGrid.Width / 2) ?
@@ -851,11 +892,12 @@ namespace CineSphere
                     Window.Current.Bounds.Bottom - videoControllerGrid.Height - 30 :
                     unpoint.Position.Y - videoControllerGrid.Height / 2);
 
-            if (unpoint.Position.Y < 60 && unpoint.Position.Y < 60) return;
+            if (unpoint.Position.Y < 80 && unpoint.Position.Y < 80) return;
 
 
             if (!isVisible)
             {
+
                 videoControllerGrid.Margin = new Thickness(xPos, yPos, 0, 0);
 
                 VisualStateManager.GoToState(this, "showController", true);
@@ -866,9 +908,9 @@ namespace CineSphere
                 pointerpressedstage = new PointerEventHandler(hideControlsE);
                 MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
 
+                this._resetTimer();
 
             }
-            this._resetTimer();
 
         }
 
@@ -888,6 +930,8 @@ namespace CineSphere
         {
             _controlsTimer.Stop();
             _controlsTimer.Tick -= _controlsTimer_Tick;
+            timesTicked = 1;
+
         }
 
         private void _resetTimer()
@@ -901,7 +945,6 @@ namespace CineSphere
 
         private void _resetTimerHandler(object sender, PointerRoutedEventArgs e)
         {
-
             _controlsTimer.Stop();
             timesTicked = 1;
             _controlsTimer.Tick -= _controlsTimer_Tick;
@@ -916,20 +959,26 @@ namespace CineSphere
             if (timesTicked > timesToTick)
             {
                 _controlsStopTimer();
+
+                if (!isVisible) return;
+
                 if (ColorPickerHolder.Visibility.ToString() == "Visible")
                 {
                     VisualStateManager.GoToState(this, "resetColorPicker", true);
-
+                    MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                    pointerpressedstage = new PointerEventHandler(showControls);
+                    MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                    isVisible = false;
                 }
                 else
                 {
-
                     if (isVisible) VisualStateManager.GoToState(this, "hideController", true);
+                    MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                    pointerpressedstage = new PointerEventHandler(showControls);
+                    MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                    isVisible = false;
                 }
-                MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
-                pointerpressedstage = new PointerEventHandler(showControls);
-                MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
-                isVisible = false;
+              
             }
 
         }
@@ -950,12 +999,10 @@ namespace CineSphere
 
             if (_isSelectingColor)
             {
-
-
+                
                 Color newColor = Win32.GetPixelColor((int)screenCoords.X + (int)unpoint.Position.X, (int)screenCoords.Y + (int)unpoint.Position.Y);
-
-
                 HandleColorChange(newColor);
+            
             }
 
 
@@ -971,11 +1018,13 @@ namespace CineSphere
             }
             else if (_isSelectingColor)
             {
-
                 VisualStateManager.GoToState(this, "hideColorPicker", true);
+                MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                pointerpressedstage = new PointerEventHandler(showControls);
+                MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
             }
             _isSelectingColor = false;
-
+            isVisible = false;
         }
 
         private void ReGet_Pixel(object sender, PointerRoutedEventArgs e)
@@ -1073,5 +1122,32 @@ namespace CineSphere
             throw new NotImplementedException();
         }
     }
+
+
+    public class PlaybackConverter : IValueConverter
+    {
+
+        public object Convert(object value,
+  Type targetType,
+  object parameter,
+  string language)
+        {
+
+
+
+            return "4";
+
+        }
+
+        public object ConvertBack(object value,
+  Type targetType,
+  object parameter,
+  string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 
 }
