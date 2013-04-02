@@ -435,8 +435,20 @@ namespace CineSphere
 
             if (videoPlayer.CurrentState == MediaElementState.Playing)
             {
-                ActualPause.Opacity = 1;
-                ActualPlay.Opacity = 0;
+                if (videoPlayer.DefaultPlaybackRate == 0)
+                {
+                    ActualPause.Opacity = 0;
+                    ActualPlay.Opacity = 1;
+                }
+                else {
+                    RewindButtonText.Text = "";
+                    ForwardButtonText.Text = "";
+                    ForwardButtonGraphic.Opacity = 1;
+                    RewindButtonGraphic.Opacity = 1;
+                    ActualPause.Opacity = 1;
+                    ActualPlay.Opacity = 0;
+                }
+                
             }
             else
             {
@@ -486,7 +498,7 @@ namespace CineSphere
         {
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                if (videoPlayer.CurrentState == MediaElementState.Playing)
+                if (videoPlayer.CurrentState == MediaElementState.Playing && videoPlayer.DefaultPlaybackRate == 1.0)
                 {
                     videoPlayer.Pause();
                     ActualPause.Opacity = 0;
@@ -494,7 +506,7 @@ namespace CineSphere
                 }
                 else
                 {
-                    if (videoPlayer.DefaultPlaybackRate == 0)
+                    if (videoPlayer.DefaultPlaybackRate != 1.0)
                     {
                         videoPlayer.DefaultPlaybackRate = 1.0;
                         videoPlayer.PlaybackRate = 1.0;
@@ -503,6 +515,7 @@ namespace CineSphere
                     videoPlayer.Play();
                     ActualPause.Opacity = 1;
                     ActualPlay.Opacity = 0;
+                    MyProgressHelper.CurrentPlaybackRate = 1.0;
                 }
             }
             );
@@ -569,6 +582,8 @@ namespace CineSphere
                 videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 4.0;
                     RewindButtonText.Text = "";
                     ForwardButtonText.Text = "";
+                    ForwardButtonGraphic.Opacity = 1;
+                    RewindButtonGraphic.Opacity = 1;
                 break;
                 case 4:
                     videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 8.0;
@@ -578,13 +593,14 @@ namespace CineSphere
                 break;
                 case 16:
                     videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 1.0;
-             
+                    videoPlayer.DefaultPlaybackRate = 1.0;
+
                 break;
 
             }
             Debug.WriteLine(Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString());
-            ForwardButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString();
-
+            ForwardButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() + "x";
+            ForwardButtonGraphic.Opacity = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? 1 : 0;
         }
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
@@ -599,6 +615,8 @@ namespace CineSphere
                     videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = -4.0;
                     RewindButtonText.Text = "";
                     ForwardButtonText.Text = "";
+                    ForwardButtonGraphic.Opacity = 1;
+                    RewindButtonGraphic.Opacity = 1;
                     break;
                 case -4:
                     videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = -8.0;
@@ -608,10 +626,13 @@ namespace CineSphere
                     break;
                 case -16:
                     videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 1.0;
+                    videoPlayer.DefaultPlaybackRate = 1.0;
+
                     break;
 
             }
-            RewindButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString();
+            RewindButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString()+"x";
+            RewindButtonGraphic.Opacity = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? 1 : 0;
 
            
         }

@@ -49,7 +49,7 @@
     -->
     <Grid Style="{StaticResource LayoutRootStyle}" Name="MainGrid" Opacity="0">
         <Grid.Background>
-            <ImageBrush ImageSource="/Assets/background.jpg"  Stretch="Fill"/>
+            <ImageBrush ImageSource="ms-appx:///Assets/background.jpg"  Stretch="Fill"/>
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -67,7 +67,7 @@
         <common:GridViewOverride
             x:Name="itemGridView"
             AutomationProperties.AutomationId="ItemsGridView"
-            AutomationProperties.Name="Items"
+            AutomationProperties.Name="Videos"
             TabIndex="1"
             Grid.RowSpan="2"
             Padding="60,136,116,20"
@@ -212,7 +212,7 @@
                         </ObjectAnimationUsingKeyFrames>
 
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>

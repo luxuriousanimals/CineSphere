@@ -47,7 +47,7 @@
 
                     <Canvas >
                         <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
-						<Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-5" Canvas.Top="0" >
+                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="-5" Canvas.Top="0" Name="RewindButtonGraphic" >
                             <Path.Data>
                                 <PathGeometry>
                                     <PathGeometry.Figures>
@@ -68,7 +68,7 @@
                                 </PathGeometry>
                             </Path.Data>
                         </Path>
-                        <TextBlock  Foreground="Black" Text="" FontSize="16" Name="RewindButtonText" Width="20" Height="20" Canvas.Left="-10" Canvas.Top="-10" TextAlignment="Center" />
+                        <TextBlock  Foreground="{Binding ButtonFillColor, Mode=OneWay}" Text="" FontSize="32" Name="RewindButtonText" Width="48" Height="40" Canvas.Left="-24" Canvas.Top="-24" TextAlignment="Center" />
                     </Canvas>
 
                     <!--<Image Source="Assets/rewind.png"  Width="64"  Height="56"/>-->
@@ -79,7 +79,7 @@
                 	</Button.RenderTransform>
                     <Canvas >
                         <Ellipse Width="82" Height="82"  Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-41" Canvas.Top="-41" />
-                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="5" Canvas.Top="0" >
+                        <Path Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" StrokeThickness="1" Canvas.Left="5" Canvas.Top="0" Name="ForwardButtonGraphic" >
                             <Path.Data>
                                 <PathGeometry>
                                     <PathGeometry.Figures>
@@ -100,7 +100,7 @@
                                 </PathGeometry>
                             </Path.Data>
                         </Path>
-                        <TextBlock  Foreground="Black" Text="" FontSize="16" Name="ForwardButtonText" Width="20" Height="20" Canvas.Left="-10" Canvas.Top="-10" TextAlignment="Center" />
+                        <TextBlock Foreground="{Binding ButtonFillColor, Mode=OneWay}" Text="" FontSize="32" Name="ForwardButtonText" Width="48" Height="40" Canvas.Left="-24" Canvas.Top="-24" TextAlignment="Center" />
                     </Canvas>
 
                     <!--<Image Source="Assets/forward.png"  Width="64"  Height="56"/>-->

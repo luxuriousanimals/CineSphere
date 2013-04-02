@@ -1,6 +1,7 @@
 ﻿using CineSphere.Common;
 using CineSphere.Model;
 using System;
+using System.Diagnostics;
 using System.IO;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -33,13 +34,8 @@ namespace CineSphere
             {
                 rootFrame = new Frame();
 
-                //rootFrame.Background = new ImageBrush
-                //{
-                //    Stretch = Windows.UI.Xaml.Media.Stretch.UniformToFill,
-                //    ImageSource =
-                //        new BitmapImage { UriSource = new Uri("ms-appx:///Assets/background.jpg") }
-                //};
 
+                
                 SuspensionManager.RegisterFrame(rootFrame, "AppFrame");
 
                 if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -89,8 +85,8 @@ namespace CineSphere
             using (var db = new SQLiteConnection(DBPath))
             {
 
-                //db.DeleteAll<Video>();
-                //StorageApplicationPermissions.FutureAccessList.Clear();
+                db.DeleteAll<Video>();
+                StorageApplicationPermissions.FutureAccessList.Clear();
             }
         }
 
