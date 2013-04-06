@@ -13,7 +13,7 @@
 
 
     <Page.Resources>
-        <CollectionViewSource x:Name="videoList" IsSourceGrouped="False"/>
+        <CollectionViewSource x:Name="videoList" IsSourceGrouped="True"/>
 
         <common:MineColorHelper x:Key="MineColorHelper" StrokeColorC="AntiqueWhite"></common:MineColorHelper>
 
@@ -87,39 +87,22 @@
                 <EntranceThemeTransition IsStaggeringEnabled="False"/>
             </TransitionCollection>
             </GridView.Transitions>
-            <!--<GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VariableSizedWrapGrid ItemHeight="200" ItemWidth="200" MaximumRowsOrColumns="6" Orientation="Vertical"/>
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>-->
-            <!--<GridView.GroupStyle>
-                <GroupStyle HidesIfEmpty="True">
+            <GridView.GroupStyle>
+                <GroupStyle>
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <Grid Background="LightGray" Margin="0">
-                                <TextBlock Text='{Binding Size}' 
-                                   Foreground="Black" Margin="30"
-                                   Style="{StaticResource HeaderTextStyle}"/>
+                            <Grid Background="Transparent" Margin="0">
+                                <TextBlock Text="{Binding Key}" Foreground="White" FontSize="25" Margin="5"></TextBlock>
                             </Grid>
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
-
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="GroupItem">
-                            <Setter Property="MinWidth" Value="600"/>
-                            <Setter Property="BorderBrush" Value="DarkGray"/>
-                            <Setter Property="BorderThickness" Value="2"/>
-                            <Setter Property="Margin" Value="3,0"/>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid/>
+                            <VariableSizedWrapGrid  Orientation="Vertical"></VariableSizedWrapGrid>
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>
-            </GridView.GroupStyle>-->
+            </GridView.GroupStyle>
         </common:GridViewOverride>
             <!--ItemContainerStyle="{StaticResource CineSphereGridViewItemStyle1}" 
             />-->

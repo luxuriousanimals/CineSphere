@@ -80,6 +80,11 @@ namespace CineSphere
 
             MainGrid.Children.Add(controls);
             Grid.SetRowSpan(controls, 2);
+            
+            SetCollectionViewSource();
+            itemGridView.ItemClick += itemGridView_ItemClick;
+
+            mainGrid.Opacity = 1;
         }
 
 
@@ -87,17 +92,14 @@ namespace CineSphere
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await SetCollectionViewSource();
-            itemGridView.ItemClick += itemGridView_ItemClick;
-
-            mainGrid.Opacity = 1;
+     
             // Current.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x77, 0x77, 0x77));
 
         }
 
         async Task SetCollectionViewSource()
         {
-             
+
             IStorageItem mru = null;
             if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
             {
@@ -105,19 +107,20 @@ namespace CineSphere
 
 
                 //videoList.Source = _movieList.GetAll(mru.Path);
-                videoList.Source = _movieList.GetAll();
+                videoList.Source = _movieList.GetGroupsByCategory();
             }
             else
             {
                 //itemGridView.ItemsSource = _movieList.GetAll();
-                videoList.Source = _movieList.GetAll();
+                videoList.Source = _movieList.GetGroupsByCategory();
 
+                Debug.WriteLine(_movieList.GetGroupsByCategory());
 
             }
 
             itemGridView.SelectedItem = null;
 
-            if (_movieList.GetAll().Count() == 0)
+            if (_movieList.GetGroupsByCategory().Count() == 0)
             {
 
                 EmptyLibraryView.Visibility = Visibility.Visible;
@@ -181,7 +184,7 @@ namespace CineSphere
                         StorageApplicationPermissions.FutureAccessList.AddOrReplace(file.Name, file);
                     }
                     await ProcessFileSelection(file);
-                    
+
                 }
                 ShowProgressBar.Visibility = Visibility.Collapsed;
 
@@ -195,8 +198,8 @@ namespace CineSphere
                     if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(file.Name))
                     {
                         StorageApplicationPermissions.FutureAccessList.AddOrReplace(file.Name, file);
-                    } 
-                    
+                    }
+
                     await ProcessFileSelection(file);
                     ShowProgressBar.Visibility = Visibility.Collapsed;
 
@@ -204,7 +207,7 @@ namespace CineSphere
 
             }
 
-            await SetCollectionViewSource();
+            //await SetCollectionViewSource();
 
         }
 
@@ -226,11 +229,11 @@ namespace CineSphere
                 {
                     StorageApplicationPermissions.FutureAccessList.AddOrReplace(folder.Name, folder);
                 }
-                    await ProcessFolderSelection(folder);
-               
+                await ProcessFolderSelection(folder);
+
             }
 
-            await SetCollectionViewSource();
+            //await SetCollectionViewSource();
 
         }
 
@@ -248,7 +251,7 @@ namespace CineSphere
             var results = await folder.GetFilesAsync();
 
             ShowProgressBar.Visibility = Visibility.Visible;
-            
+
             foreach (StorageFile file in results)
             {
                 if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(file.Name))
@@ -282,19 +285,18 @@ namespace CineSphere
 
         private async void click_goBack(object sender, RoutedEventArgs e)
         {
-            if (vidPlayer.Position.TotalSeconds != 0) {
+            if (vidPlayer.Position.TotalSeconds != 0)
+            {
                 var prevFile = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
-                
-                _movieList.Update(new Video { Title = prevFile.Name, Path = prevFile.Path, rememberFullscreen = controls.IsFullscreen, LastPosition=(int)vidPlayer.Position.TotalMilliseconds  });
+
+                _movieList.Update(new Video { Title = prevFile.Name, Path = prevFile.Path, rememberFullscreen = controls.IsFullscreen, LastPosition = (int)vidPlayer.Position.TotalMilliseconds });
 
             }
-          
 
-
-            await SetCollectionViewSource();
+            //await SetCollectionViewSource();
             if (controls.IsFullscreen) controls.FullscreenToggle();
             switchViews("Library");
-           // this.Frame.Navigate(typeof(MainPage));
+            // this.Frame.Navigate(typeof(MainPage));
 
         }
 
@@ -340,16 +342,6 @@ namespace CineSphere
         {
             var item = ((Video)e.ClickedItem);
 
-            //if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile")) {
-            //    var prevFile = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
-
-            //    if (item.Path.Equals(prevFile.Path)) {
-            //        switchViews("Video");
-            //        return;
-            //    }
-
-            //}
-
             await SetMediaElementSourceAsync(item);
             switchViews("Video");
             //videoPlayer.Play();
@@ -365,8 +357,8 @@ namespace CineSphere
             videoPlayer.SetSource(stream, video.ContentType);
             videoPlayer.Play();
             if (file.LastPosition != 0)
-           { 
-                TimeSpan ts =  new TimeSpan(0, 0, 0, 0, file.LastPosition);
+            {
+                TimeSpan ts = new TimeSpan(0, 0, 0, 0, file.LastPosition);
                 videoPlayer.Position = ts;
                 controls.MyProgressHelper.VideoPosition = file.LastPosition;
 
@@ -380,11 +372,11 @@ namespace CineSphere
 
         private void colorPickerLibrary_show(object sender, RoutedEventArgs e)
         {
-            
-            
-            
-         
-            controls.RefMaster.Margin = new Thickness(Window.Current.Bounds.Width/2 - controls.RefMaster.Width/2, Window.Current.Bounds.Height/2 - controls.RefMaster.Height/2, 0,0);
+
+
+
+
+            controls.RefMaster.Margin = new Thickness(Window.Current.Bounds.Width / 2 - controls.RefMaster.Width / 2, Window.Current.Bounds.Height / 2 - controls.RefMaster.Height / 2, 0, 0);
 
             switchViews("colorPicker");
             bottomAppBar.IsOpen = false;
@@ -395,7 +387,7 @@ namespace CineSphere
 
         private void hidePicker(object sender, PointerRoutedEventArgs e)
         {
-            
+
             PointerPoint unpoint = e.GetCurrentPoint(MainPage.Current.mainGrid);
 
             if (unpoint.Properties.IsRightButtonPressed) return;
@@ -404,14 +396,15 @@ namespace CineSphere
             Point screenCoords = ttv.TransformPoint(new Point(0, 0));
             if ((unpoint.Position.X <= screenCoords.X + controls.RefHolder.ActualWidth && unpoint.Position.X >= screenCoords.X) && (unpoint.Position.Y <= screenCoords.Y + controls.RefHolder.ActualHeight && unpoint.Position.Y >= screenCoords.Y))
             { }
-            else {
+            else
+            {
 
 
                 Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
                 switchViews("colorPickerClose");
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedMainGrid);
             }
-         
+
         }
 
         private async void RemoveFile(object sender, RoutedEventArgs e)
@@ -419,12 +412,13 @@ namespace CineSphere
 
             bottomAppBar.IsOpen = false;
 
-         foreach(Video item in itemGridView.SelectedItems) {
-            _movieList.Remove(item);
-         }
+            foreach (Video item in itemGridView.SelectedItems)
+            {
+                _movieList.Remove(item);
+            }
 
-         RemoveFileAppBarButton.Visibility = Visibility.Collapsed;
-         await SetCollectionViewSource();
+            RemoveFileAppBarButton.Visibility = Visibility.Collapsed;
+            //await SetCollectionViewSource();
 
         }
 
@@ -434,10 +428,12 @@ namespace CineSphere
             if (e.AddedItems.Count() == 1) selectedItems++;
             if (e.RemovedItems.Count() == 1) selectedItems--;
 
-            if (selectedItems == 0) {
+            if (selectedItems == 0)
+            {
                 RemoveFileAppBarButton.Visibility = Visibility.Collapsed;
             }
-            else {
+            else
+            {
                 RemoveFileAppBarButton.Visibility = Visibility.Visible;
             }
 
@@ -445,12 +441,9 @@ namespace CineSphere
 
         private void HandleOpenEvent(object sender, object e)
         {
-            if (controls.RefMaster.Visibility.ToString() == "Collapsed")   return;
+            if (controls.RefMaster.Visibility.ToString() == "Collapsed") return;
             VisualStateManager.GoToState(controls, "hideController", true);
         }
-
-
-
 
     }
 

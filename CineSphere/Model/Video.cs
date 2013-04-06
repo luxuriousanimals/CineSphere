@@ -91,6 +91,19 @@ namespace CineSphere.Model
             }
         }
 
+        private bool _isMRU;
+        public bool isMRU
+        {
+            get { return this._isMRU; }
+            set
+            {
+                if (_isMRU != value)
+                {
+                    _isMRU = value; OnPropertyChanged("isMRU");
+                }
+            }
+        }
+
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

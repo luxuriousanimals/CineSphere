@@ -109,6 +109,8 @@
     <Compile Include="Common\ProgressHelper.cs" />
     <Compile Include="Common\SQLite.cs" />
     <Compile Include="Common\SQLiteAsync.cs" />
+    <Compile Include="Data\GroupListCollection.cs" />
+    <Compile Include="Data\ItemCollection.cs" />
     <Compile Include="Data\MovieList.cs" />
     <Compile Include="Model\Video.cs" />
     <Compile Include="VideoControls.xaml.cs">
