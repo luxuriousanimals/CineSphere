@@ -13,7 +13,7 @@
 
 
     <Page.Resources>
-        <CollectionViewSource x:Name="collectionViewSource" IsSourceGrouped="True"></CollectionViewSource>
+        <CollectionViewSource x:Name="collectionViewSource"></CollectionViewSource>
 
         <common:MineColorHelper x:Key="MineColorHelper" StrokeColorC="AntiqueWhite"></common:MineColorHelper>
 

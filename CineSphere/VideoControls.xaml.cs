@@ -159,6 +159,9 @@ namespace CineSphere
             ForwardButtonText.Text = "";
             ForwardButtonGraphic.Opacity = 1;
             RewindButtonGraphic.Opacity = 1;
+            videoPlayer.PlaybackRate = MyProgressHelper.CurrentPlaybackRate = 1.0;
+            videoPlayer.DefaultPlaybackRate = 1.0;
+
 
             ForwardButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() + "x";
             ForwardButtonGraphic.Opacity = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? 1 : 0;

@@ -88,13 +88,7 @@ namespace CineSphere
             
             itemGridView.ItemClick += itemGridView_ItemClick;
 
-          //  Debug.WriteLine(_source.Count().ToString());
-
             SetCollectionViewSource();
-
-            Debug.WriteLine("sdfdf " + _source);
-
-            collectionViewSource.Source = _source;
 
             mainGrid.Opacity = 1;
         }
@@ -118,22 +112,21 @@ namespace CineSphere
 
                 mru = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
 
-                _source = _movieList.GetGroupsByCategory();
+                collectionViewSource.Source = _movieList.GetAll();
 
               
             }
             else
             {
 
-                _source = _movieList.GetGroupsByCategory();
+                collectionViewSource.Source = _movieList.GetAll();
                 
             }
 
             itemGridView.SelectedItem = null;
 
-            Debug.WriteLine(_source.Count());
 
-            if (_source.Count() == 0)
+            if (_movieList.GetAll().Count() == 0)
             {
 
                 EmptyLibraryView.Visibility = Visibility.Visible;
@@ -248,6 +241,10 @@ namespace CineSphere
      
         public async Task ProcessFileSelection(StorageFile file)
         {
+
+            if (_movieList.exists(file.Path)) return;
+
+
             var tn = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
             string x = await SaveImageLocal(tn, file.Name);
 
@@ -259,41 +256,8 @@ namespace CineSphere
                 Path = file.Path
             };
 
-            if (_source.Count() == 0)
-            {
-                GroupInfoCollection<Video> group = new GroupInfoCollection<Video>
-                {
-                    Key = "false"
-                };
-
-
-                //_source.Add(group);
-
-                _movieList.Add(video);
-
-                
-
-
-            }
-            else {
-                 GroupInfoCollection<Video> group =
-                _source.Single(groupInfoList => groupInfoList.Key == video.isMRU.ToString());
-
-                 Debug.WriteLine("this sith"+_source);
-
-                _movieList.Add(video);
-
-                //group.Add(video);
-
-            }
-         //   GroupInfoCollection<Video> group =
-         //_source.Single(groupInfoList => groupInfoList.Key == video.isMRU.ToString());
-
-
-//            _movieList.Add();
-
-            await SetCollectionViewSource();
-
+            _movieList.Add(video);
+          
         }
 
         public async Task ProcessFolderSelection(StorageFolder folder)
@@ -321,7 +285,7 @@ namespace CineSphere
         {
 
             var desiredName = string.Format("{0}.jpg", uniqueName);
-            var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(desiredName, CreationCollisionOption.ReplaceExisting);
+            var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(desiredName, CreationCollisionOption.FailIfExists);
 
             using (var filestream = await file.OpenStreamForWriteAsync())
             {
@@ -370,7 +334,7 @@ namespace CineSphere
                     VisualStateManager.GoToState(controls, "CloseVideoView", true);
                     controls.isVisible = false;
                     controls.reset();
-                    //controls.Visibility = Visibility.Collapsed;
+
                     mainGrid.RemoveHandler(Control.PointerPressedEvent, controls.pointerpressedstage);
 
                     break;

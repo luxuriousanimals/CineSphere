@@ -23,56 +23,78 @@ using Windows.Storage;
 namespace CineSphere.Data
 {
     public class MovieList
+    {
+        private static readonly string _dbPath = App.DBPath;
+        // public ObservableCollection<VideoViewModel> list = new ObservableCollection<VideoViewModel>();
+
+
+        public void Add(Video video)
         {
-
-            private readonly ItemCollection _collection = new ItemCollection();
-
-            ObservableCollection<GroupInfoCollection<Video>> groups;
-
-            public void Add(Video video)
+            using (var connection = new SQLiteConnection(_dbPath))
             {
-               // Debug.WriteLine("ERERE");
+                var existingItem = (connection.Table<Video>().Where(
+          v => v.Id == video.Id)).SingleOrDefault();
 
-                _collection.Add(video);
-            }
-
-            public void Remove(Video video)
-            {
-
-                _collection.Remove(video);
-              
-            }
-
-            public void Update(Video video)
-            {
-                //using (var connection = new SQLiteConnection(_dbPath))
-                //{
-                //    var existingItem = (connection.Table<Video>().Where(
-                //          v => v.Path == video.Path)).Single();
-
-                //    existingItem.rememberFullscreen = video.rememberFullscreen;
-                //    existingItem.LastPosition = video.LastPosition;
-
-                //    connection.Update(existingItem);
-
-                //}
-            }
-            public ItemCollection Collection
-            {
-                get
+                if (existingItem == null)
                 {
-                    return _collection;
+                    connection.Insert(video);
                 }
-            }
+                else
+                {
+                    //update logic  
+                }
 
-         
-            internal ObservableCollection<GroupInfoCollection<Video>> GetGroupsByCategory()
+
+            }
+        }
+
+        public async void Remove(Video video)
+        {
+            string result;
+            using (var connection = new SQLiteConnection(_dbPath))
+            {
+                var existingItem = (connection.Table<Video>().Where(
+              v => v.Id == video.Id)).Single();
+
+                if (connection.Delete(existingItem) > 0)
+                {
+                    result = "Success";
+
+
+                }
+                else
+                {
+                    result = "This project was not removed";
+                }
+
+            }
+        }
+
+        public void Update(Video video)
+        {
+            using (var connection = new SQLiteConnection(_dbPath))
+            {
+                var existingItem = (connection.Table<Video>().Where(
+                      v => v.Path == video.Path)).Single();
+
+                existingItem.rememberFullscreen = video.rememberFullscreen;
+                existingItem.LastPosition = video.LastPosition;
+
+                connection.Update(existingItem);
+
+            }
+        }
+
+        public ObservableCollection<Video> GetAll(string e = null)
+        {
+            var list = new ObservableCollection<Video>();
+            using (var db = new SQLiteConnection(_dbPath))
             {
 
-                using (var db = new SQLiteConnection(App.DBPath))
+                if (e == null)
                 {
-                    var pull = db.Table<Video>().OrderBy(v => v.Id);
-                    foreach (var _video in pull)
+                    var query = db.Table<Video>().OrderBy(v => v.Id);
+                    foreach (var _video in query)
                     {
                         var videes = new Video()
                         {
@@ -80,124 +102,91 @@ namespace CineSphere.Data
                             Title = _video.Title,
                             Img = pathToImage(_video.Img),
                             Path = _video.Path,
-                            isMRU = _video.isMRU,
                             LastPosition = _video.LastPosition,
                             rememberFullscreen = _video.rememberFullscreen
 
                         };
-                        Collection.Add(videes);
+                        list.Add(videes);
                     }
                 }
-
-                groups = new ObservableCollection<GroupInfoCollection<Video>>();
-
-                var query = from video in Collection
-                            orderby video.isMRU
-                            group video by video.isMRU into g
-                            select new { GroupName = g.Key.ToString(), Items = g };
-
-                foreach (var g in query)
+                else
                 {
-                    GroupInfoCollection<Video> info = new GroupInfoCollection<Video>
+                    var query = db.Table<Video>().Where(v => v.Path == e);
+                    foreach (var _video in query)
                     {
-                        Key = (g.GroupName.ToLower()=="false") ? "" : "Recently Used"
-                    };
-
-                  //  Debug.WriteLine("name " + g.GroupName);
-
-                    foreach (Video video in g.Items)
-                    {
-                        info.Add(video);
-                    //    Debug.WriteLine("video " + video.Title);
-
+                        var videes = new Video()
+                        {
+                            Id = _video.Id,
+                            Title = _video.Title,
+                            Img = pathToImage(_video.Img),
+                            Path = _video.Path,
+                            LastPosition = _video.LastPosition,
+                            rememberFullscreen = _video.rememberFullscreen
+                        };
+                        list.Add(videes);
                     }
 
-                    groups.Add(info);
+
+                    var rest = db.Table<Video>().Where(v => v.Path != e);
+                    foreach (var _video in rest)
+                    {
+                        var videes = new Video()
+                        {
+                            Id = _video.Id,
+                            Title = _video.Title,
+                            Img = pathToImage(_video.Img),
+                            Path = _video.Path,
+                            LastPosition = _video.LastPosition,
+                            rememberFullscreen = _video.rememberFullscreen
+
+                        };
+                        list.Add(videes);
+                    }
+
                 }
-
-                return groups;
             }
-            //public ObservableCollection<Video> GetAll(string e = null)
-            //{
-            //    var list = new ObservableCollection<Video>();
-            //            using (var db = new SQLiteConnection(_dbPath))
-            //            {
-
-            //                if (e == null)
-            //                {
-            //                    var query = db.Table<Video>().OrderBy(v => v.Id);
-            //                    foreach (var _video in query)
-            //                    {
-            //                        var videes = new Video()
-            //                        {
-            //                            Id = _video.Id,
-            //                            Title = _video.Title,
-            //                            Img = pathToImage(_video.Img),
-            //                            Path = _video.Path,
-            //                            LastPosition = _video.LastPosition,
-            //                            rememberFullscreen = _video.rememberFullscreen
-
-            //                        };
-            //                        list.Add(videes);
-            //                    }
-            //                } else {
-            //                    var query = db.Table<Video>().Where(v => v.Path == e);
-            //                    foreach (var _video in query)
-            //                    {
-            //                        var videes = new Video()
-            //                        {
-            //                            Id = _video.Id,
-            //                            Title = _video.Title,
-            //                            Img = pathToImage(_video.Img),
-            //                            Path = _video.Path,
-            //                            LastPosition = _video.LastPosition,
-            //                            rememberFullscreen = _video.rememberFullscreen
-            //                        };
-            //                        list.Add(videes);
-            //                    }
-
-
-            //                    var rest = db.Table<Video>().Where(v => v.Path != e);
-            //                    foreach (var _video in rest)
-            //                    {
-            //                        var videes = new Video()
-            //                        {
-            //                            Id = _video.Id,
-            //                            Title = _video.Title,
-            //                            Img = pathToImage(_video.Img),
-            //                            Path = _video.Path,
-            //                            LastPosition = _video.LastPosition,
-            //                            rememberFullscreen = _video.rememberFullscreen
-
-            //                        };
-            //                        list.Add(videes);
-            //                    }
-
-            //                }
-            //            }
-            //            return list;
-                    
-            //}
-
-
-            //public ObservableCollection<VideoViewModel> GetMRU(string e)
-            //{
-             
-
-            //}
-
-            public string pathToImage(string path)
-            {
-                return path;
-            }
-
-
-        
-            //public IEnumerable<IGrouping<string, VideoViewModel>> GetAllGrouped()
-            //{
-            //   // return GetAll().OrderBy(x => x.Title).GroupBy(x => x.CategoryName);
-            //}
+            return list;
 
         }
-    
+
+        public bool exists(String videopath)
+        {
+
+            using (var connection = new SQLiteConnection(_dbPath))
+            {
+                var existingItem = (connection.Table<Video>().Where(
+                      v => v.Path == videopath)).SingleOrDefault();
+
+               if (existingItem == null)
+                {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+
+            }
+        }
+
+
+        //public ObservableCollection<VideoViewModel> GetMRU(string e)
+        //{
+
+
+        //}
+
+        public string pathToImage(string path)
+        {
+            return path;
+        }
+
+
+
+        //public IEnumerable<IGrouping<string, VideoViewModel>> GetAllGrouped()
+        //{
+        //   // return GetAll().OrderBy(x => x.Title).GroupBy(x => x.CategoryName);
+        //}
+
+    }
+
 }
