@@ -170,10 +170,6 @@ namespace CineSphere
             await PickFileAsync(true);
         }
 
-
-
-
-
         public async Task PickFileAsync(bool multipleFiles)
         {
 
@@ -237,7 +233,7 @@ namespace CineSphere
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder != null)
             {
-                if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(folder.Name))
+                if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(folder.Name) )
                 {
                     StorageApplicationPermissions.FutureAccessList.AddOrReplace(folder.Name, folder);
                 }
@@ -271,14 +267,13 @@ namespace CineSphere
                 };
 
 
-                _source.Add(group);
+                //_source.Add(group);
 
-                //_movieList.Add(video);
+                _movieList.Add(video);
 
                 
 
 
-                await SetCollectionViewSource();
             }
             else {
                  GroupInfoCollection<Video> group =
@@ -286,9 +281,9 @@ namespace CineSphere
 
                  Debug.WriteLine("this sith"+_source);
 
-                //_movieList.Add(video);
+                _movieList.Add(video);
 
-                group.Add(video);
+                //group.Add(video);
 
             }
          //   GroupInfoCollection<Video> group =
@@ -297,7 +292,7 @@ namespace CineSphere
 
 //            _movieList.Add();
 
-
+            await SetCollectionViewSource();
 
         }
 
@@ -310,10 +305,9 @@ namespace CineSphere
             
             foreach (StorageFile file in results)
             {
-                if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(file.Name))
+                if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(file.Name) && (file.FileType.Contains("mp4") || file.FileType.Contains("avi")))
                 {
                     StorageApplicationPermissions.FutureAccessList.AddOrReplace(file.Name, file);
-
                     await ProcessFileSelection(file);
                 }
             }
@@ -375,6 +369,7 @@ namespace CineSphere
                     VisualStateManager.GoToState(this, "CloseVideoView", true);
                     VisualStateManager.GoToState(controls, "CloseVideoView", true);
                     controls.isVisible = false;
+                    controls.reset();
                     //controls.Visibility = Visibility.Collapsed;
                     mainGrid.RemoveHandler(Control.PointerPressedEvent, controls.pointerpressedstage);
 

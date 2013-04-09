@@ -25,12 +25,12 @@
             <Grid Name="PlayBackHolder"  Width="360" Height="360">
 
 
-                <Button x:Name="PlayButton" Width="159" Height="159" Click="PlayPauseTogglePressed"  BorderThickness="0" Canvas.ZIndex="601" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}" RenderTransformOrigin="0.5,0.5" >
+                <Button x:Name="PlayButton" Width="160" Height="160" Click="PlayPauseTogglePressed"  BorderThickness="0" Canvas.ZIndex="601" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CustomButton}" RenderTransformOrigin="0.5,0.5" >
                 	<Button.RenderTransform>
                 		<CompositeTransform/>
                 	</Button.RenderTransform>
                     <Canvas>
-                        <Ellipse Width="159" Height="159" Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-80" Canvas.Top="-80"/>
+                        <Ellipse Width="160" Height="160" Fill="{Binding ButtonBackGroundFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorA, Mode=OneWay}" Canvas.Left="-80" Canvas.Top="-80"/>
                         <Polygon Points="-30,-40 50,0, -30,40" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}" Name="ActualPlay" Opacity="0"/>
                         <Canvas Name="ActualPause">
                             <Rectangle Height="80" Width="20" RadiusX="3" RadiusY="3" Fill="{Binding ButtonFillColor, Mode=OneWay}" Stroke="{Binding StrokeColorB, Mode=OneWay}"  Canvas.Left="-30" Canvas.Top="-40"/>

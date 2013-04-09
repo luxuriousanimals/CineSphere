@@ -154,6 +154,18 @@ namespace CineSphere
             Holder.AddHandler(Control.PointerMovedEvent, pointerovercontrols, true);
         }
 
+        public void reset() {
+            RewindButtonText.Text = "";
+            ForwardButtonText.Text = "";
+            ForwardButtonGraphic.Opacity = 1;
+            RewindButtonGraphic.Opacity = 1;
+
+            ForwardButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() + "x";
+            ForwardButtonGraphic.Opacity = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? 1 : 0;
+            RewindButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() + "x";
+            RewindButtonGraphic.Opacity = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? 1 : 0;
+        }
+
         private void CreateProgressElement()
         {
 
@@ -250,7 +262,7 @@ namespace CineSphere
         {
             VolumeControlHolder = new Canvas();
 
-            Windows.UI.Xaml.Shapes.Path Volume1 = DrawVolumeControls(186, .868, 0);
+            Windows.UI.Xaml.Shapes.Path Volume1 = DrawVolumeControls(186, .88, 0);
             Windows.UI.Xaml.Shapes.Path Volume2 = DrawVolumeControls(213, .8859, 1);
             Windows.UI.Xaml.Shapes.Path Volume3 = DrawVolumeControls(242, .8976, 2);
             Windows.UI.Xaml.Shapes.Path Volume4 = DrawVolumeControls(270, .9071, 3);
@@ -598,7 +610,6 @@ namespace CineSphere
                 break;
 
             }
-            Debug.WriteLine(Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString());
             ForwardButtonText.Text = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? "" : Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() + "x";
             ForwardButtonGraphic.Opacity = (Math.Abs((int)MyProgressHelper.CurrentPlaybackRate).ToString() == "1") ? 1 : 0;
         }
@@ -673,7 +684,9 @@ namespace CineSphere
 
             string objstring = obj.ToString();
 
-            if (!objstring.Equals("#FF767676", StringComparison.Ordinal) && !objstring.Equals("#FF000000", StringComparison.Ordinal) && !objstring.Equals("#FFFFFFFF", StringComparison.Ordinal))
+            Debug.WriteLine(objstring);
+
+            if (!objstring.Equals("#FF5E5E5E", StringComparison.Ordinal) && !objstring.Equals("#FF000000", StringComparison.Ordinal) && !objstring.Equals("#FFFFFFFF", StringComparison.Ordinal))
             {
 
                 MyColors.ButtonFillColor = new SolidColorBrush(Color.FromArgb(204, (byte)(obj.R * .69), (byte)(obj.G * .69), (byte)(obj.B * .69)));
