@@ -683,7 +683,7 @@ namespace CineSphere
                 MyColors.StrokeColorB = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 MyColors.StrokeColorC = new SolidColorBrush(Color.FromArgb(204, (byte)(obj.R * .69), (byte)(obj.G * .69), (byte)(obj.B * .69)));
 
-                MainPage.Current.tintView.Opacity = .1;
+                MainPage.Current.tintView.Opacity = (MainPage.Current.mainGrid.Background.ToString().Contains("SolidColorBrush")) ? 0 : .1;
                 MainPage.Current.tintView.Visibility = Visibility.Visible;
             }
             else

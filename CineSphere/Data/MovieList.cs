@@ -27,9 +27,11 @@ namespace CineSphere.Data
 
             private readonly ItemCollection _collection = new ItemCollection();
 
+            ObservableCollection<GroupInfoCollection<Video>> groups;
 
             public void Add(Video video)
             {
+               // Debug.WriteLine("ERERE");
 
                 _collection.Add(video);
             }
@@ -87,7 +89,7 @@ namespace CineSphere.Data
                     }
                 }
 
-                ObservableCollection<GroupInfoCollection<Video>> groups = new ObservableCollection<GroupInfoCollection<Video>>();
+                groups = new ObservableCollection<GroupInfoCollection<Video>>();
 
                 var query = from video in Collection
                             orderby video.isMRU
@@ -98,11 +100,16 @@ namespace CineSphere.Data
                 {
                     GroupInfoCollection<Video> info = new GroupInfoCollection<Video>
                     {
-                        Key = (g.GroupName.ToLower()=="false") ? "" : g.GroupName
+                        Key = (g.GroupName.ToLower()=="false") ? "" : "Recently Used"
                     };
+
+                  //  Debug.WriteLine("name " + g.GroupName);
+
                     foreach (Video video in g.Items)
                     {
                         info.Add(video);
+                    //    Debug.WriteLine("video " + video.Title);
+
                     }
 
                     groups.Add(info);

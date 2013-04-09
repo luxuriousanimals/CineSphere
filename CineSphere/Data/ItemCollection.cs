@@ -6,6 +6,7 @@ namespace CineSphere.Data
     using CineSphere.Common;
     using CineSphere.Model;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Linq;
 
@@ -15,7 +16,7 @@ namespace CineSphere.Data
     {
         private static readonly string _dbPath = App.DBPath;
 
-        private System.Collections.ObjectModel.ObservableCollection<Video> _itemCollection = new System.Collections.ObjectModel.ObservableCollection<Video>();
+        private ObservableCollection<Video> _itemCollection = new ObservableCollection<Video>();
 
         public IEnumerator<Video> GetEnumerator()
         {
@@ -38,14 +39,13 @@ namespace CineSphere.Data
 
           //      if (existingItem == null)
           //      {
+          //         // Debug.WriteLine("item added");
           //          connection.Insert(video);
           //      }
           //      else
           //      {
           //          //update logic  
           //      }
-
-
           //  }
 
         }
@@ -55,24 +55,24 @@ namespace CineSphere.Data
 
             _itemCollection.Remove(video);
             Debug.WriteLine("DONE");
-        //    string result;
-        //    using (var connection = new SQLiteConnection(_dbPath))
-        //    {
-        //        var existingItem = (connection.Table<Video>().Where(
-        //      v => v.Id == video.Id)).Single();
+            string result;
+            using (var connection = new SQLiteConnection(_dbPath))
+            {
+                var existingItem = (connection.Table<Video>().Where(
+              v => v.Id == video.Id)).Single();
 
-        //        if (connection.Delete(existingItem) > 0)
-        //        {
-        //            result = "Success";
+                if (connection.Delete(existingItem) > 0)
+                {
+                    result = "Success";
 
 
-        //        }
-        //        else
-        //        {
-        //            result = "This project was not removed";
-        //        }
+                }
+                else
+                {
+                    result = "This project was not removed";
+                }
 
-        //    }
+            }
         }
         
     }

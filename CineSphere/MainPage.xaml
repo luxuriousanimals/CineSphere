@@ -13,7 +13,7 @@
 
 
     <Page.Resources>
-        <CollectionViewSource x:Name="videoList" IsSourceGrouped="True"/>
+        <CollectionViewSource x:Name="collectionViewSource" IsSourceGrouped="True"></CollectionViewSource>
 
         <common:MineColorHelper x:Key="MineColorHelper" StrokeColorC="AntiqueWhite"></common:MineColorHelper>
 
@@ -71,7 +71,7 @@
             TabIndex="1"
             Grid.RowSpan="2"
             Padding="60,136,116,20"
-            ItemsSource="{Binding Source={StaticResource videoList}, Mode=TwoWay}"
+            ItemsSource="{Binding Source={StaticResource collectionViewSource}, Mode=TwoWay}"
             ItemTemplate="{StaticResource CircularLibraryGrid140x180}"
             IsItemClickEnabled="True"
             SelectionMode="Multiple"
@@ -117,7 +117,7 @@
             Visibility="Collapsed"
             Margin="0,-10,0,0"
             Padding="10,0,0,60"
-            ItemsSource="{Binding Source={StaticResource videoList}}"
+            ItemsSource="{Binding Source={StaticResource collectionViewSource}}"
             ItemTemplate="{StaticResource Standard80ItemTemplate}"
             SelectionMode="None"
             IsSwipeEnabled="false"/>

@@ -85,8 +85,8 @@ namespace CineSphere
             using (var db = new SQLiteConnection(DBPath))
             {
 
-             //   db.DeleteAll<Video>();
-               // StorageApplicationPermissions.FutureAccessList.Clear();
+             //  db.DeleteAll<Video>();
+             //  StorageApplicationPermissions.FutureAccessList.Clear();
             }
         }
 

@@ -4,6 +4,7 @@ using CineSphere.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -61,6 +62,9 @@ namespace CineSphere
 
         private MovieList _movieList { get; set; }
 
+        private ObservableCollection<GroupInfoCollection<Video>> _source;
+
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -75,14 +79,22 @@ namespace CineSphere
             controls = new VideoControls();
             controls.RefMaster.Visibility = Visibility.Collapsed;
 
+         
 
             tintView.DataContext = MyColors;
 
             MainGrid.Children.Add(controls);
             Grid.SetRowSpan(controls, 2);
             
-            SetCollectionViewSource();
             itemGridView.ItemClick += itemGridView_ItemClick;
+
+          //  Debug.WriteLine(_source.Count().ToString());
+
+            SetCollectionViewSource();
+
+            Debug.WriteLine("sdfdf " + _source);
+
+            collectionViewSource.Source = _source;
 
             mainGrid.Opacity = 1;
         }
@@ -103,24 +115,25 @@ namespace CineSphere
             IStorageItem mru = null;
             if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
             {
+
                 mru = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
 
+                _source = _movieList.GetGroupsByCategory();
 
-                //videoList.Source = _movieList.GetAll(mru.Path);
-                videoList.Source = _movieList.GetGroupsByCategory();
+              
             }
             else
             {
-                //itemGridView.ItemsSource = _movieList.GetAll();
-                videoList.Source = _movieList.GetGroupsByCategory();
 
-                Debug.WriteLine(_movieList.GetGroupsByCategory());
-
+                _source = _movieList.GetGroupsByCategory();
+                
             }
 
             itemGridView.SelectedItem = null;
 
-            if (_movieList.GetGroupsByCategory().Count() == 0)
+            Debug.WriteLine(_source.Count());
+
+            if (_source.Count() == 0)
             {
 
                 EmptyLibraryView.Visibility = Visibility.Visible;
@@ -132,7 +145,6 @@ namespace CineSphere
 
             }
 
-            //ditemGridView.ItemsSource = videoList.Source;
 
         }
 
@@ -207,7 +219,7 @@ namespace CineSphere
 
             }
 
-            //await SetCollectionViewSource();
+            await SetCollectionViewSource();
 
         }
 
@@ -233,15 +245,59 @@ namespace CineSphere
 
             }
 
-            //await SetCollectionViewSource();
+            await SetCollectionViewSource();
 
         }
 
+     
         public async Task ProcessFileSelection(StorageFile file)
         {
             var tn = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
             string x = await SaveImageLocal(tn, file.Name);
-            _movieList.Add(new Video { Title = file.Name, Img = x, Path = file.Path });
+
+
+            Video video = new Video
+            {
+                Title = file.Name,
+                Img = x,
+                Path = file.Path
+            };
+
+            if (_source.Count() == 0)
+            {
+                GroupInfoCollection<Video> group = new GroupInfoCollection<Video>
+                {
+                    Key = "false"
+                };
+
+
+                _source.Add(group);
+
+                //_movieList.Add(video);
+
+                
+
+
+                await SetCollectionViewSource();
+            }
+            else {
+                 GroupInfoCollection<Video> group =
+                _source.Single(groupInfoList => groupInfoList.Key == video.isMRU.ToString());
+
+                 Debug.WriteLine("this sith"+_source);
+
+                //_movieList.Add(video);
+
+                group.Add(video);
+
+            }
+         //   GroupInfoCollection<Video> group =
+         //_source.Single(groupInfoList => groupInfoList.Key == video.isMRU.ToString());
+
+
+//            _movieList.Add();
+
+
 
         }
 
@@ -251,7 +307,7 @@ namespace CineSphere
             var results = await folder.GetFilesAsync();
 
             ShowProgressBar.Visibility = Visibility.Visible;
-
+            
             foreach (StorageFile file in results)
             {
                 if (!StorageApplicationPermissions.FutureAccessList.ContainsItem(file.Name))
