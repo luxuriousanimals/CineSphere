@@ -24,13 +24,13 @@ namespace CineSphere.Data
 {
     public class MovieList
     {
-        private static readonly string _dbPath = App.DBPath;
-        // public ObservableCollection<VideoViewModel> list = new ObservableCollection<VideoViewModel>();
 
-
+    
         public void Add(Video video)
         {
-            using (var connection = new SQLiteConnection(_dbPath))
+            //_Collection.Add(video);
+
+            using (var connection = new SQLiteConnection(App.DBPath))
             {
                 var existingItem = (connection.Table<Video>().Where(
           v => v.Id == video.Id)).SingleOrDefault();
@@ -39,141 +39,116 @@ namespace CineSphere.Data
                 {
                     connection.Insert(video);
                 }
-                else
-                {
-                    //update logic  
-                }
-
-
             }
         }
 
-        public async void Remove(Video video)
+        public void Remove(Video video)
         {
-            string result;
-            using (var connection = new SQLiteConnection(_dbPath))
+
+            _Collection.Remove(video);
+
+            using (var connection = new SQLiteConnection(App.DBPath))
             {
                 var existingItem = (connection.Table<Video>().Where(
               v => v.Id == video.Id)).Single();
 
                 if (connection.Delete(existingItem) > 0)
                 {
-                    result = "Success";
 
-
-                }
-                else
-                {
-                    result = "This project was not removed";
                 }
 
             }
+
         }
 
         public void Update(Video video)
         {
-            using (var connection = new SQLiteConnection(_dbPath))
-            {
-                var existingItem = (connection.Table<Video>().Where(
-                      v => v.Path == video.Path)).Single();
-
-                existingItem.rememberFullscreen = video.rememberFullscreen;
-                existingItem.LastPosition = video.LastPosition;
-
-                connection.Update(existingItem);
-
-            }
+         
         }
+        private ItemCollection _Collection = new ItemCollection();
 
-        public ObservableCollection<Video> GetAll(string e = null)
+        public ItemCollection Collection
         {
-            var list = new ObservableCollection<Video>();
-            using (var db = new SQLiteConnection(_dbPath))
+            get
             {
+                return this._Collection;
+            }
+        }
 
-                if (e == null)
+        internal List<GroupInfoList<Video>> GetGroupsByCategory()
+        {
+
+            using (var db = new SQLiteConnection(App.DBPath))
+            {
+                var pull = db.Table<Video>().OrderBy(v => v.Id);
+                foreach (var _video in pull)
                 {
-                    var query = db.Table<Video>().OrderBy(v => v.Id);
-                    foreach (var _video in query)
+                    var videes = new Video()
                     {
-                        var videes = new Video()
-                        {
-                            Id = _video.Id,
-                            Title = _video.Title,
-                            Img = pathToImage(_video.Img),
-                            Path = _video.Path,
-                            LastPosition = _video.LastPosition,
-                            rememberFullscreen = _video.rememberFullscreen
+                        Id = _video.Id,
+                        Title = _video.Title,
+                        Img = pathToImage(_video.Img),
+                        Path = _video.Path,
+                        isMRU = _video.isMRU,
+                        LastPosition = _video.LastPosition,
+                        rememberFullscreen = _video.rememberFullscreen
 
-                        };
-                        list.Add(videes);
-                    }
-                }
-                else
-                {
-                    var query = db.Table<Video>().Where(v => v.Path == e);
-                    foreach (var _video in query)
-                    {
-                        var videes = new Video()
-                        {
-                            Id = _video.Id,
-                            Title = _video.Title,
-                            Img = pathToImage(_video.Img),
-                            Path = _video.Path,
-                            LastPosition = _video.LastPosition,
-                            rememberFullscreen = _video.rememberFullscreen
-                        };
-                        list.Add(videes);
-                    }
+                    };
 
 
-                    var rest = db.Table<Video>().Where(v => v.Path != e);
-                    foreach (var _video in rest)
-                    {
-                        var videes = new Video()
-                        {
-                            Id = _video.Id,
-                            Title = _video.Title,
-                            Img = pathToImage(_video.Img),
-                            Path = _video.Path,
-                            LastPosition = _video.LastPosition,
-                            rememberFullscreen = _video.rememberFullscreen
-
-                        };
-                        list.Add(videes);
-                    }
-
+                    Collection.Add(videes);
                 }
             }
-            return list;
+            
+            List<GroupInfoList<Video>> groups = new List<GroupInfoList<Video>>();
+            
+            var query = from video in Collection
+                        orderby video.isMRU
+                        group video by video.isMRU into g
+                        select new { GroupName = g.Key.ToString(), Video = g };
+
+            foreach (var g in query)
+            {
+            
+                
+                GroupInfoList<Video> info = new GroupInfoList<Video>
+                {
+                    Key = (g.GroupName.ToLower() == "false") ? "false" : "Recently Used"
+                };
+
+                foreach (Video video in g.Video)
+                {
+                    info.Add(video);
+                }
+
+                groups.Add(info);
+            }
+
+            return groups;
 
         }
+
 
         public bool exists(String videopath)
         {
 
-            using (var connection = new SQLiteConnection(_dbPath))
+            using (var connection = new SQLiteConnection(App.DBPath))
             {
                 var existingItem = (connection.Table<Video>().Where(
                       v => v.Path == videopath)).SingleOrDefault();
 
-               if (existingItem == null)
+                if (existingItem == null)
                 {
                     return false;
                 }
-                else {
+                else
+                {
                     return true;
                 }
 
             }
         }
 
-
-        //public ObservableCollection<VideoViewModel> GetMRU(string e)
-        //{
-
-
-        //}
 
         public string pathToImage(string path)
         {

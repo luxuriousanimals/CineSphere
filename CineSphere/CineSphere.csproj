@@ -88,6 +88,8 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -110,7 +112,9 @@
     <Compile Include="Common\SQLite.cs" />
     <Compile Include="Common\SQLiteAsync.cs" />
     <Compile Include="Data\GroupListCollection.cs" />
-    <Compile Include="Data\ItemCollection.cs" />
+    <Compile Include="Data\ItemCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Data\MovieList.cs" />
     <Compile Include="Model\Video.cs" />
     <Compile Include="VideoControls.xaml.cs">

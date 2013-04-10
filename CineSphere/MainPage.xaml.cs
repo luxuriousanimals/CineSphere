@@ -62,7 +62,7 @@ namespace CineSphere
 
         private MovieList _movieList { get; set; }
 
-        private ObservableCollection<GroupInfoCollection<Video>> _source;
+        private List<GroupInfoList<Video>> _source;
 
 
         public MainPage()
@@ -79,7 +79,6 @@ namespace CineSphere
             controls = new VideoControls();
             controls.RefMaster.Visibility = Visibility.Collapsed;
 
-         
 
             tintView.DataContext = MyColors;
 
@@ -95,7 +94,7 @@ namespace CineSphere
 
 
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
      
@@ -106,27 +105,11 @@ namespace CineSphere
         async Task SetCollectionViewSource()
         {
 
-            IStorageItem mru = null;
-            if (StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem("LastUsedFile"))
-            {
-
-                mru = await StorageApplicationPermissions.MostRecentlyUsedList.GetItemAsync("LastUsedFile");
-
-                collectionViewSource.Source = _movieList.GetAll();
-
-              
-            }
-            else
-            {
-
-                collectionViewSource.Source = _movieList.GetAll();
-                
-            }
-
+            _source = _movieList.GetGroupsByCategory();
+            
             itemGridView.SelectedItem = null;
 
-
-            if (_movieList.GetAll().Count() == 0)
+            if (_source.Count() == 0)
             {
 
                 EmptyLibraryView.Visibility = Visibility.Visible;
@@ -137,7 +120,7 @@ namespace CineSphere
                 EmptyLibraryView.Visibility = Visibility.Collapsed;
 
             }
-
+            collectionViewSource.Source = _source;
 
         }
 
@@ -257,7 +240,15 @@ namespace CineSphere
             };
 
             _movieList.Add(video);
-          
+
+
+            GroupInfoList<Video> info = new GroupInfoList<Video>();
+            info.Key = "false";
+            
+            info.Add(video);
+            
+            //_source.Add(info);
+
         }
 
         public async Task ProcessFolderSelection(StorageFolder folder)
@@ -285,12 +276,12 @@ namespace CineSphere
         {
 
             var desiredName = string.Format("{0}.jpg", uniqueName);
-            var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(desiredName, CreationCollisionOption.FailIfExists);
+            var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(desiredName, CreationCollisionOption.GenerateUniqueName);
 
             using (var filestream = await file.OpenStreamForWriteAsync())
             {
                 await thumb.AsStream().CopyToAsync(filestream);
-                return new Uri(string.Format("ms-appdata:///local/{0}.jpg", uniqueName), UriKind.Absolute).ToString();
+                return new Uri(string.Format("ms-appdata:///local/{0}", file.Name), UriKind.Absolute).ToString();
             }
 
         }
@@ -422,7 +413,7 @@ namespace CineSphere
 
         }
 
-        private async void RemoveFile(object sender, RoutedEventArgs e)
+        private void RemoveFile(object sender, RoutedEventArgs e)
         {
 
             bottomAppBar.IsOpen = false;
@@ -487,6 +478,7 @@ namespace CineSphere
                          (byte)((pixel & 0x00FF0000) >> 16));
             return color;
         }
+
     }
 
 }

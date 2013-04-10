@@ -2,6 +2,8 @@
 using CineSphere;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Collections.Generic;
+using System;
 
 namespace CineSphere.Model
 {
@@ -11,7 +13,6 @@ namespace CineSphere.Model
     {
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
 
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -105,13 +106,50 @@ namespace CineSphere.Model
         }
 
 
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
+            if (this.PropertyChanged != null)
             {
-                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
 
     }
+
+    public class GroupInfoList<T> : List<object>
+    {
+
+        public object Key { get; set; }
+
+
+        public new IEnumerator<object> GetEnumerator()
+        {
+            return (System.Collections.Generic.IEnumerator<object>)base.GetEnumerator();
+        }
+    }
+
+
+    public class ItemCollection : IEnumerable<Object>
+    {
+        private System.Collections.ObjectModel.ObservableCollection<Video> itemCollection = new System.Collections.ObjectModel.ObservableCollection<Video>();
+
+        public IEnumerator<Object> GetEnumerator()
+        {
+            return itemCollection.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        //public void Add(Video video)
+        //{
+        //    itemCollection.Add(video);
+        //}
+    }
+
+
+
 }

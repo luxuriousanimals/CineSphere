@@ -1185,6 +1185,5 @@ namespace CineSphere
         }
     }
 
-
-
+   
 }

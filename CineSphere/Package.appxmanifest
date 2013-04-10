@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="bbff8e94-36be-4481-af97-291371fc241d6" Publisher="CN=LuxAnimals" Version="1.0.0.0" />
+  <Identity Name="bbff8e94-36be-4481-af97-291371fc241d2" Publisher="CN=LuxAnimals" Version="1.0.0.0" />
   <Properties>
     <DisplayName>CineSphere</DisplayName>
     <PublisherDisplayName>LuxuriousAnimals</PublisherDisplayName>
