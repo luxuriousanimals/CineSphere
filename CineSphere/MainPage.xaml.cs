@@ -114,6 +114,9 @@ namespace CineSphere
                 Debug.WriteLine("this captures");
                 itemGridView.UpdateLayout();
 
+                Debug.WriteLine(collectionViewSource.View.Count());
+
+
             }
             else
             {
@@ -254,8 +257,7 @@ namespace CineSphere
 
             _movieList.Add(video);
 
-
-          
+                  
 
         }
 

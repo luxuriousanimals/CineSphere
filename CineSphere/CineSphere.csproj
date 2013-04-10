@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>CineSphere_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>235F3E7BCDD95036F8CAE543DD428A5FD99383BF</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>30C8121ED05306067138069C2C24FB20F2409E45</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -176,7 +176,7 @@
     <SDKReference Include="Microsoft.VCLibs, Version=11.0">
       <Name>Microsoft Visual C++ Runtime Package</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.WinRT, Version=3.7.16">
+    <SDKReference Include="SQLite.WinRT, Version=3.7.15.2">
       <Name>SQLite for Windows Runtime</Name>
     </SDKReference>
   </ItemGroup>
@@ -233,6 +233,12 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>CineSphere_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
