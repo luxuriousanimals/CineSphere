@@ -28,7 +28,7 @@ namespace CineSphere.Data
     
         public void Add(Video video)
         {
-            //_Collection.Add(video);
+            _Collection.Add(video);
 
             using (var connection = new SQLiteConnection(App.DBPath))
             {

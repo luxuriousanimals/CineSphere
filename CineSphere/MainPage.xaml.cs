@@ -76,9 +76,12 @@ namespace CineSphere
             mainGrid = this.MainGrid;
             tintView = this.TintView;
 
+            mainGrid.Opacity = 1;
+        
             controls = new VideoControls();
             controls.RefMaster.Visibility = Visibility.Collapsed;
-
+            
+            _source = new List<GroupInfoList<Video>>();
 
             tintView.DataContext = MyColors;
 
@@ -89,8 +92,9 @@ namespace CineSphere
 
             SetCollectionViewSource();
 
-            mainGrid.Opacity = 1;
-        }
+            collectionViewSource.Source = _source;
+
+            }
 
 
 
@@ -105,23 +109,32 @@ namespace CineSphere
         async Task SetCollectionViewSource()
         {
 
-            _source = _movieList.GetGroupsByCategory();
-            
-            itemGridView.SelectedItem = null;
-
-            if (_source.Count() == 0)
+            if (_source.Count() != 0)
             {
+                Debug.WriteLine("this captures");
+                itemGridView.UpdateLayout();
 
-                EmptyLibraryView.Visibility = Visibility.Visible;
             }
             else
             {
 
-                EmptyLibraryView.Visibility = Visibility.Collapsed;
+                _source = _movieList.GetGroupsByCategory();
 
+                itemGridView.SelectedItem = null;
+
+                if (_source.Count() == 0)
+                {
+
+                    EmptyLibraryView.Visibility = Visibility.Visible;
+                }
+                else
+                {
+
+                    EmptyLibraryView.Visibility = Visibility.Collapsed;
+
+                }
+                
             }
-            collectionViewSource.Source = _source;
-
         }
 
         async private void AddFolder(object sender, RoutedEventArgs e)
@@ -242,12 +255,7 @@ namespace CineSphere
             _movieList.Add(video);
 
 
-            GroupInfoList<Video> info = new GroupInfoList<Video>();
-            info.Key = "false";
-            
-            info.Add(video);
-            
-            //_source.Add(info);
+          
 
         }
 
@@ -413,7 +421,7 @@ namespace CineSphere
 
         }
 
-        private void RemoveFile(object sender, RoutedEventArgs e)
+        private async void RemoveFile(object sender, RoutedEventArgs e)
         {
 
             bottomAppBar.IsOpen = false;
@@ -424,7 +432,7 @@ namespace CineSphere
             }
 
             RemoveFileAppBarButton.Visibility = Visibility.Collapsed;
-            //await SetCollectionViewSource();
+            await SetCollectionViewSource();
 
         }
 
