@@ -56,10 +56,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <Canvas Grid.Row="0" Opacity="0" Visibility="Collapsed">
-            <Image x:Name="extendedSplashImage" Source="Assets/620x300.png" />
-        </Canvas>
-        
+      
         <Grid Name="TintView" Opacity=".1" Grid.RowSpan="2" Visibility="Collapsed" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding ProgressFrameFillColor, Mode=OneWay}" IsHitTestVisible="False"/>
 
 

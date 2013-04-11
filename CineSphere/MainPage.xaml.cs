@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Media;
@@ -46,7 +47,11 @@ namespace CineSphere
         private PointerEventHandler pointerpressedMainGrid;
         private int selectedItems = 0;
 
-
+        internal Rect splashImageRect; 
+        internal bool dismissed = false;
+        internal Frame rootFrame; 
+        private SplashScreen splash;
+ 
         public bool IsFullscreen { set; get; }
 
         private Size _previousmediasize;
@@ -57,13 +62,14 @@ namespace CineSphere
             set { _previousmediasize = value; }
         }
 
+        internal Rect SplashImageRect;
+        internal bool Dismissed;
 
         public SQLiteConnection db = new SQLiteConnection(App.DBPath);
 
         private MovieList _movieList { get; set; }
 
         private ObservableCollection<GroupInfoCollection<Video>> _source;
-
 
         public MainPage()
         {
@@ -78,9 +84,7 @@ namespace CineSphere
 
             controls = new VideoControls();
             controls.RefMaster.Visibility = Visibility.Collapsed;
-
          
-
             tintView.DataContext = MyColors;
 
             MainGrid.Children.Add(controls);
@@ -93,14 +97,19 @@ namespace CineSphere
             mainGrid.Opacity = 1;
         }
 
+        public void SetExtendedSplashInfo(Rect splashRect, bool dismissStat)
+        {
+            SplashImageRect = splashRect;
+            Dismissed = dismissStat;
 
+            Debug.WriteLine("dsfsdf " + dismissStat);
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-     
-            // Current.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x77, 0x77, 0x77));
-
+         
         }
 
         async Task SetCollectionViewSource()
