@@ -13,34 +13,34 @@ namespace CineSphere.Data
 
 
 
-    public class ItemCollection : IEnumerable<Video>
-    {
-        private static readonly string _dbPath = App.DBPath;
+    //public class ItemCollection : IEnumerable<Video>
+    //{
+    //    private static readonly string _dbPath = App.DBPath;
 
-        private ObservableCollection<Video> _itemCollection = new ObservableCollection<Video>();
+    //    private ObservableCollection<Video> _itemCollection = new ObservableCollection<Video>();
 
-        public IEnumerator<Video> GetEnumerator()
-        {
-            return _itemCollection.GetEnumerator();
-        }
+    //    public IEnumerator<Video> GetEnumerator()
+    //    {
+    //        return _itemCollection.GetEnumerator();
+    //    }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    //    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    //    {
+    //        return GetEnumerator();
+    //    }
 
-        public void Add(Video video)
-        {
-            _itemCollection.Add(video);
+    //    public void Add(Video video)
+    //    {
+    //        _itemCollection.Add(video);
 
-        }
+    //    }
 
-        public void Remove(Video video)
-        {
+    //    public void Remove(Video video)
+    //    {
 
-            _itemCollection.Remove(video);
+    //        _itemCollection.Remove(video);
 
-        }
+    //    }
       
-    }
+    //}
 }

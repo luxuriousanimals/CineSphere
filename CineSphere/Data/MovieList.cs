@@ -22,146 +22,186 @@ using Windows.Storage;
 
 namespace CineSphere.Data
 {
-    public class MovieList
+
+
+
+    public class Video : System.ComponentModel.INotifyPropertyChanged
     {
 
-    
-        public void Add(Video video)
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+
+        private string _title = string.Empty;
+        public string Title
         {
-            _Collection.Add(video);
-
-            using (var connection = new SQLiteConnection(App.DBPath))
+            get { return _title; }
+            set
             {
-                var existingItem = (connection.Table<Video>().Where(
-          v => v.Id == video.Id)).SingleOrDefault();
-
-                if (existingItem == null)
+                if (_title != value)
                 {
-                    connection.Insert(video);
+                    _title = value; OnPropertyChanged("Title");
                 }
             }
         }
 
-        public void Remove(Video video)
+        private string _img = string.Empty;
+        public string Img
         {
-
-            _Collection.Remove(video);
-
-            using (var connection = new SQLiteConnection(App.DBPath))
+            get { return _img; }
+            set
             {
-                var existingItem = (connection.Table<Video>().Where(
-              v => v.Id == video.Id)).Single();
-
-                if (connection.Delete(existingItem) > 0)
+                if (_img != value)
                 {
-
-                }
-
-            }
-
-        }
-
-        public void Update(Video video)
-        {
-         
-        }
-        private ItemCollection _Collection = new ItemCollection();
-
-        public ItemCollection Collection
-        {
-            get
-            {
-                return this._Collection;
-            }
-        }
-
-        internal List<GroupInfoList<Video>> GetGroupsByCategory()
-        {
-
-            using (var db = new SQLiteConnection(App.DBPath))
-            {
-                var pull = db.Table<Video>().OrderBy(v => v.Id);
-                foreach (var _video in pull)
-                {
-                    var videes = new Video()
-                    {
-                        Id = _video.Id,
-                        Title = _video.Title,
-                        Img = pathToImage(_video.Img),
-                        Path = _video.Path,
-                        isMRU = _video.isMRU,
-                        LastPosition = _video.LastPosition,
-                        rememberFullscreen = _video.rememberFullscreen
-
-                    };
-
-
-                    Collection.Add(videes);
+                    _img = value; OnPropertyChanged("Img");
                 }
             }
-            
-            List<GroupInfoList<Video>> groups = new List<GroupInfoList<Video>>();
-            
-            var query = from video in Collection
-                        orderby video.isMRU
-                        group video by video.isMRU into g
-                        select new { GroupName = g.Key.ToString(), Video = g };
-
-            foreach (var g in query)
+        }
+        private string _path = string.Empty;
+        public string Path
+        {
+            get { return _path; }
+            set
             {
-            
-                
-                GroupInfoList<Video> info = new GroupInfoList<Video>
+                if (_path != value)
                 {
-                    Key = (g.GroupName.ToLower() == "false") ? "false" : "Recently Used"
-                };
-
-                foreach (Video video in g.Video)
-                {
-                    info.Add(video);
+                    _path = value; OnPropertyChanged("Path");
                 }
-
-                groups.Add(info);
             }
-
-            return groups;
-
+        }
+        private bool _rememberFullscreen;
+        public bool rememberFullscreen
+        {
+            get { return _rememberFullscreen; }
+            set
+            {
+                if (_rememberFullscreen != value)
+                {
+                    _rememberFullscreen = value; OnPropertyChanged("rememberFullscreen");
+                }
+            }
+        }
+        private int _lastPosition = 0;
+        public int LastPosition
+        {
+            get { return _lastPosition; }
+            set
+            {
+                if (_lastPosition != value)
+                {
+                    _lastPosition = value; OnPropertyChanged("LastPosition");
+                }
+            }
+        }
+        private int _size = 140;
+        public int Size
+        {
+            get { return this._size; }
+            set
+            {
+                if (_size != value)
+                {
+                    _size = value; OnPropertyChanged("Size");
+                }
+            }
         }
 
-
-        public bool exists(String videopath)
+        private bool _isMRU;
+        public bool isMRU
         {
-
-            using (var connection = new SQLiteConnection(App.DBPath))
+            get { return this._isMRU; }
+            set
             {
-                var existingItem = (connection.Table<Video>().Where(
-                      v => v.Path == videopath)).SingleOrDefault();
-
-                if (existingItem == null)
+                if (_isMRU != value)
                 {
-                    return false;
+                    _isMRU = value; OnPropertyChanged("isMRU");
                 }
-                else
-                {
-                    return true;
-                }
-
             }
         }
 
 
-        public string pathToImage(string path)
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            return path;
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
         }
-
-
-
-        //public IEnumerable<IGrouping<string, VideoViewModel>> GetAllGrouped()
-        //{
-        //   // return GetAll().OrderBy(x => x.Title).GroupBy(x => x.CategoryName);
-        //}
 
     }
+
+    public class GroupInfoList<T> : List<object>
+    {
+
+        public object Key { get; set; }
+
+        public new IEnumerator<object> GetEnumerator()
+        {
+            return (System.Collections.Generic.IEnumerator<object>)base.GetEnumerator();
+        }
+    }
+
+    public class ItemCollection : IEnumerable<Object>
+    {
+        private System.Collections.ObjectModel.ObservableCollection<Video> itemCollection = new System.Collections.ObjectModel.ObservableCollection<Video>();
+
+        public IEnumerator<Object> GetEnumerator()
+        {
+            return itemCollection.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return CineSphere.Data.ItemCollection.GetEnumerator();
+        }
+
+        public void Add(Video video)
+        {
+            itemCollection.Add(video);
+        }
+    }
+
+    public class MovieList
+    {
+        public MovieList() {
+            private ItemCollection _Collection = new ItemCollection();
+
+            public ItemCollection Collection
+                {
+                    get
+                    {
+                        return this._Collection;
+                    }
+                }
+
+            internal List<GroupInfoList<object>> GetGroupsByCategory()
+                {
+                    List<GroupInfoList<object>> groups = new List<GroupInfoList<object>>();
+
+                    //var query = from item in Collection
+                    //            orderby ((Video)item).Category
+                    //            group item by ((Item)item).Category into g
+                    //            select new { GroupName = g.Key, Items = g };
+                    //foreach (var g in query)
+                    //{
+                    //    GroupInfoList<object> info = new GroupInfoList<object>();
+                    //    info.Key = g.GroupName;
+                    //    foreach (var item in g.Items)
+                    //    {
+                    //        info.Add(item);
+                    //    }
+                    //    groups.Add(info);
+                    //}
+
+                    return groups;
+
+                }
+
+          
+        }
+    
 
 }

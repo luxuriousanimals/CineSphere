@@ -112,11 +112,7 @@
     <Compile Include="Common\SQLite.cs" />
     <Compile Include="Common\SQLiteAsync.cs" />
     <Compile Include="Data\GroupListCollection.cs" />
-    <Compile Include="Data\ItemCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Data\MovieList.cs" />
-    <Compile Include="Model\Video.cs" />
     <Compile Include="VideoControls.xaml.cs">
       <DependentUpon>VideoControls.xaml</DependentUpon>
     </Compile>
@@ -179,6 +175,9 @@
     <SDKReference Include="SQLite.WinRT, Version=3.7.15.2">
       <Name>SQLite for Windows Runtime</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
