@@ -895,15 +895,21 @@ namespace CineSphere
             {
                 if (isVisible)
                 {
+
                     if (ColorPickerHolder.Opacity.ToString() == "1")
                     {
                         VisualStateManager.GoToState(this, "closeColorPicker", true);
-                        Debug.WriteLine(PlayBackHolder.Opacity);
                         if (PlayBackHolder.Opacity.ToString() != "0") _resetTimer();
-                        Debug.WriteLine(PlayBackHolder.Opacity);
+                        isVisible = false;
+                        isVisible = false;
+                        MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                        pointerpressedstage = new PointerEventHandler(showControls);
+                        MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                        _controlsStopTimer();
                     }
                     else
                     {
+
                         if (Current.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
 
                         if (MainPage.Current.vidView.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
@@ -945,11 +951,8 @@ namespace CineSphere
 
             if (unpoint.Position.Y < 80 && unpoint.Position.Y < 80) return;
 
-            Debug.WriteLine("werewr " + isVisible);
-
             if (!isVisible)
             {
-
                 videoControllerGrid.Margin = new Thickness(xPos, yPos, 0, 0);
 
                 VisualStateManager.GoToState(this, "showController", true);
