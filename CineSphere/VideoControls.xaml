@@ -697,6 +697,82 @@
 
         			</Storyboard>
         		</VisualState>
+        		<VisualState x:Name="closeColorPicker">
+        			<Storyboard>
+        				<ObjectAnimationUsingKeyFrames Storyboard.TargetName="videoControllerGrid" Storyboard.TargetProperty="Visibility">
+        					<DiscreteObjectKeyFrame KeyTime="0">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Visible</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        					<DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Visible</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        				</ObjectAnimationUsingKeyFrames>
+        				<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Visibility">
+        					<DiscreteObjectKeyFrame KeyTime="0">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Visible</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        					<DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Collapsed</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        				</ObjectAnimationUsingKeyFrames>
+        				<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColorPickerHolder" Storyboard.TargetProperty="Opacity">
+        					<DiscreteObjectKeyFrame KeyTime="0">
+        						<DiscreteObjectKeyFrame.Value>
+        							<x:Double>1</x:Double>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        					<DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+        						<DiscreteObjectKeyFrame.Value>
+        							<x:Double>0</x:Double>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        				</ObjectAnimationUsingKeyFrames>
+        				<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlayBackHolder" Storyboard.TargetProperty="Opacity">
+        					<DiscreteObjectKeyFrame KeyTime="0">
+        						<DiscreteObjectKeyFrame.Value>
+        							<x:Double>0</x:Double>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        					<DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+        						<DiscreteObjectKeyFrame.Value>
+        							<x:Double>1</x:Double>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        				</ObjectAnimationUsingKeyFrames>
+        				<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="videoControllerGrid">
+        					<EasingDoubleKeyFrame KeyTime="0" Value="0.995"/>
+        					<EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+        				</DoubleAnimationUsingKeyFrames>
+        				<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="PlayBackHolder">
+        					<DiscreteObjectKeyFrame KeyTime="0">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Collapsed</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        					<DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Visible</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        				</ObjectAnimationUsingKeyFrames>
+        				<DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Holder" d:IsOptimized="True"/>
+        				<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Holder">
+        					<DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+        						<DiscreteObjectKeyFrame.Value>
+        							<Visibility>Collapsed</Visibility>
+        						</DiscreteObjectKeyFrame.Value>
+        					</DiscreteObjectKeyFrame>
+        				</ObjectAnimationUsingKeyFrames>
+        			</Storyboard>
+        		</VisualState>
         	</VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         

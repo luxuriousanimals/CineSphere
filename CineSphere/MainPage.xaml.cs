@@ -69,7 +69,7 @@ namespace CineSphere
 
         private MovieList _movieList { get; set; }
 
-        private ObservableCollection<GroupInfoCollection<Video>> _source;
+        private DispatcherTimer showWindowTimer;
 
         public MainPage()
         {
@@ -84,12 +84,12 @@ namespace CineSphere
 
             controls = new VideoControls();
             controls.RefMaster.Visibility = Visibility.Collapsed;
-         
+
             tintView.DataContext = MyColors;
 
             MainGrid.Children.Add(controls);
             Grid.SetRowSpan(controls, 2);
-            
+
             itemGridView.ItemClick += itemGridView_ItemClick;
 
             SetCollectionViewSource();
@@ -97,14 +97,23 @@ namespace CineSphere
             mainGrid.Opacity = 1;
         }
 
-        public void SetExtendedSplashInfo(Rect splashRect, bool dismissStat)
+            private void OnShowWindowTimer(object sender, object e)
         {
-            SplashImageRect = splashRect;
-            Dismissed = dismissStat;
+            showWindowTimer.Stop();
 
-            Debug.WriteLine("dsfsdf " + dismissStat);
-
+            Window.Current.Activate();
         }
+
+        private void bg_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            
+            showWindowTimer = new DispatcherTimer();
+            showWindowTimer.Interval = TimeSpan.FromMilliseconds(50);
+            showWindowTimer.Tick += OnShowWindowTimer;
+            showWindowTimer.Start();
+        }
+
+       
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

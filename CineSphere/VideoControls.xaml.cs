@@ -893,13 +893,22 @@ namespace CineSphere
             {
                 if (isVisible)
                 {
-                    VisualStateManager.GoToState(this, "hideControllerFast", true);
-                    isVisible = false;
-                    MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
-                    pointerpressedstage = new PointerEventHandler(showControls);
-                    MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
-                    _controlsStopTimer();
+                    if (ColorPickerHolder.Opacity.ToString() == "1")
+                    {
+                        VisualStateManager.GoToState(this, "closeColorPicker", true);
 
+                        _resetTimer();
+                    }
+                    else
+                    {
+
+                        VisualStateManager.GoToState(this, "hideControllerFast", true);
+                        isVisible = false;
+                        MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
+                        pointerpressedstage = new PointerEventHandler(showControls);
+                        MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
+                        _controlsStopTimer();
+                    }
                 }
 
             }
@@ -996,6 +1005,7 @@ namespace CineSphere
             if (timesTicked > timesToTick)
             {
                 _controlsStopTimer();
+                Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 
                 if (!isVisible) return;
 

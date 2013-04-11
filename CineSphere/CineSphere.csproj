@@ -112,9 +112,6 @@
     <Compile Include="Data\GroupListCollection.cs" />
     <Compile Include="Data\ItemCollection.cs" />
     <Compile Include="Data\MovieList.cs" />
-    <Compile Include="ExtendedSplash.xaml.cs">
-      <DependentUpon>ExtendedSplash.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Model\Video.cs" />
     <Compile Include="VideoControls.xaml.cs">
       <DependentUpon>VideoControls.xaml</DependentUpon>
@@ -145,10 +142,6 @@
     <Content Include="Assets\background.jpg" />
     <Content Include="Assets\colorwheel.png" />
     <Content Include="Assets\scrubber.png" />
-    <Page Include="ExtendedSplash.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Common\CustomStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

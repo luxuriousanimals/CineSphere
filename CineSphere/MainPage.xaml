@@ -49,7 +49,7 @@
     -->
     <Grid Style="{StaticResource LayoutRootStyle}" Name="MainGrid" Opacity="0">
         <Grid.Background>
-            <ImageBrush ImageSource="ms-appx:///Assets/background.jpg"  Stretch="Fill"/>
+            <ImageBrush ImageSource="ms-appx:///Assets/background.jpg"  Stretch="Fill" ImageOpened="bg_ImageOpened" />
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
