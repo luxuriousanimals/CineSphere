@@ -475,7 +475,7 @@ namespace CineSphere
         private void HandleOpenEvent(object sender, object e)
         {
             if (controls.RefMaster.Visibility.ToString() == "Collapsed") return;
-            VisualStateManager.GoToState(controls, "hideController", true);
+            VisualStateManager.GoToState(controls, "resetColorPicker", true);
         }
 
     }

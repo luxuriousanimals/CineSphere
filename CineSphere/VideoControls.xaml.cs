@@ -567,7 +567,7 @@ namespace CineSphere
 
         private void ColorPicker_Click(object sender, RoutedEventArgs e)
         {
-            _controlsStopTimer();
+           // _controlsStopTimer();
 
             if (ColorPickerHolder.Opacity.ToString() == "0" || ColorPickerHolder.Visibility.ToString() == "Collapsed")
             {
@@ -687,7 +687,6 @@ namespace CineSphere
 
             string objstring = obj.ToString();
 
-            Debug.WriteLine(objstring);
 
             if (!objstring.Equals("#FF5E5E5E", StringComparison.Ordinal) && !objstring.Equals("#FF000000", StringComparison.Ordinal) && !objstring.Equals("#FFFFFFFF", StringComparison.Ordinal))
             {
@@ -861,10 +860,13 @@ namespace CineSphere
 
                 isVisible = false;
 
-                VisualStateManager.GoToState(this, "hideController", true);
+
+                if (Current.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
+
                 _controlsStopTimer();
 
                 if (MainPage.Current.vidView.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
+                VisualStateManager.GoToState(this, "hideController", true);
 
                 MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
                 pointerpressedstage = new PointerEventHandler(showControls);
@@ -896,11 +898,15 @@ namespace CineSphere
                     if (ColorPickerHolder.Opacity.ToString() == "1")
                     {
                         VisualStateManager.GoToState(this, "closeColorPicker", true);
-
-                        _resetTimer();
+                        Debug.WriteLine(PlayBackHolder.Opacity);
+                        if (PlayBackHolder.Opacity.ToString() != "0") _resetTimer();
+                        Debug.WriteLine(PlayBackHolder.Opacity);
                     }
                     else
                     {
+                        if (Current.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
+
+                        if (MainPage.Current.vidView.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
 
                         VisualStateManager.GoToState(this, "hideControllerFast", true);
                         isVisible = false;
@@ -921,8 +927,7 @@ namespace CineSphere
             
             if (unpoint.Properties.IsRightButtonPressed) return;
             if (MainPage.Current.vidView.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
-            
-
+            if (ColorPickerHolder.Opacity.ToString().Equals("1", StringComparison.Ordinal)) return;
 
             double xPos =
                 (unpoint.Position.X - videoControllerGrid.Width / 2 < Window.Current.Bounds.Left + videoControllerGrid.Width / 2) ?
@@ -940,6 +945,7 @@ namespace CineSphere
 
             if (unpoint.Position.Y < 80 && unpoint.Position.Y < 80) return;
 
+            Debug.WriteLine("werewr " + isVisible);
 
             if (!isVisible)
             {
@@ -1002,11 +1008,11 @@ namespace CineSphere
         {
             DateTimeOffset time = DateTimeOffset.Now;
             timesTicked++;
+
             if (timesTicked > timesToTick)
             {
                 _controlsStopTimer();
                 Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-
                 if (!isVisible) return;
 
                 if (ColorPickerHolder.Visibility.ToString() == "Visible")
@@ -1019,11 +1025,14 @@ namespace CineSphere
                 }
                 else
                 {
-                    if (isVisible) VisualStateManager.GoToState(this, "hideController", true);
                     MainPage.Current.mainGrid.RemoveHandler(Control.PointerPressedEvent, pointerpressedstage);
                     pointerpressedstage = new PointerEventHandler(showControls);
                     MainPage.Current.mainGrid.AddHandler(Control.PointerPressedEvent, pointerpressedstage, true);
                     isVisible = false;
+
+                    if (Holder.Opacity.ToString().Equals("0", StringComparison.Ordinal)) return;
+                    if (isVisible) VisualStateManager.GoToState(this, "hideController", true);
+
                 }
               
             }

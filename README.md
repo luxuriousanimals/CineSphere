@@ -13,7 +13,7 @@ CineSphere is an open-source video player built in Visual C# for Windows 8 and M
 Known Issues
 ====
 
-Windows RT tablets choke a on Rewind (1x fps).
+Windows RT tablets choke a Rewind (1x fps).
 
  
 

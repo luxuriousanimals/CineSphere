@@ -54,7 +54,6 @@ namespace CineSphere.Data
         {
 
             _itemCollection.Remove(video);
-            Debug.WriteLine("DONE");
             string result;
             using (var connection = new SQLiteConnection(_dbPath))
             {
